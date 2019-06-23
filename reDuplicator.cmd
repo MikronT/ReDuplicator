@@ -146,6 +146,8 @@ exit /b
 
 :menu_settings
 call :logo
+set command=
+
 echo.^(i^) Settings Menu
 echo.
 echo.    Filters:
