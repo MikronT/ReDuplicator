@@ -9,6 +9,7 @@ set parameter=%parameter:"=%
 
 if exist "%parameter%" set directory=%parameter%
 
+if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
 
 
 call :logo
