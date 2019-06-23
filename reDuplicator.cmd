@@ -51,6 +51,10 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%filter_
       echo.    %%i ^| %%j bytes
       echo.    %%o ^| %%p bytes
       echo.
+      echo.^(i^) Duplicates:>>%report_duplicates%
+      echo.    %%i ^| %%j bytes>>%report_duplicates%
+      echo.    %%o ^| %%p bytes>>%report_duplicates%
+      echo.>>%report_duplicates%
     )
   )
 )
