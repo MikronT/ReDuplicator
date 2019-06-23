@@ -37,6 +37,8 @@ md temp
 
 
 
+
+
 call :logo
 echo.^(i^) Program directory: "%cd%"
 if exist "%directory%" ( echo.^(i^) Work directory: "%directory%"
@@ -116,6 +118,8 @@ exit
 
 
 
+
+
 :logo
 title [MikronT] ReDuplicator ^| %directory%
 color 0b
@@ -130,3 +134,19 @@ echo.
 echo.
 echo.
 exit /b
+
+
+
+
+
+
+
+:menu_settings
+call :logo
+
+
+
+echo.# ReDuplicator Settings #>>%settings%
+echo.filter_fileType_include=%setting_filter_fileType_include%>>%settings%
+echo.filter_fileType_exclude=%setting_filter_fileType_exclude%>>%settings%
+goto :menu_settings
