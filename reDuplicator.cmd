@@ -54,12 +54,25 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%filter_
         for /f "skip=1 tokens=2* delims=:" %%q in ('%module_rehash% -sha1 "%%o"') do (
           if "%%k" == "%%q" (
             echo.^(i^) Duplicates:
-            echo.    %%i ^| %%j bytes ^| sha1: %%k
-            echo.    %%o ^| %%p bytes ^| sha1: %%q
+            echo.    %%i
+            echo.        size: %%j bytes
+            echo.        sha1:%%k
+            echo.    %%o
+            echo.        size: %%p bytes
+            echo.        sha1:%%q
             echo.
+            echo.
+            echo.
+
             echo.^(i^) Duplicates:>>%report_duplicates%
-            echo.    %%i ^| %%j bytes ^| sha1: %%k>>%report_duplicates%
-            echo.    %%o ^| %%p bytes ^| sha1: %%q>>%report_duplicates%
+            echo.    %%i>>%report_duplicates%
+            echo.        size: %%j bytes>>%report_duplicates%
+            echo.        sha1:%%k>>%report_duplicates%
+            echo.    %%o>>%report_duplicates%
+            echo.        size: %%p bytes>>%report_duplicates%
+            echo.        sha1:%%q>>%report_duplicates%
+            echo.>>%report_duplicates%
+            echo.>>%report_duplicates%
             echo.>>%report_duplicates%
           )
         )
