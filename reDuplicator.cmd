@@ -32,7 +32,11 @@ timeout /nobreak /t 1 >nul
 
 
 
+
+
 echo.^(i^) Completed^!
+if exist %report_duplicates% ( echo.^(i^) All info saved into the %report_duplicates% file
+) else echo.^(i^) Any duplicates not found
 pause>nul
 exit
 
