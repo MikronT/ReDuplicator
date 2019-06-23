@@ -13,6 +13,7 @@ if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
 
 
 
+set module_rehash=modules\rehash.exe -norecur -none
 set report_duplicates=reports\duplicates.txt
 set temp_data=temp\data
 
