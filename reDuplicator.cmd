@@ -12,10 +12,20 @@ if exist "%parameter%" set directory=%parameter%
 if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
 
 
+
+
+
 call :logo
 echo.^(i^) Program directory: "%cd%"
 if exist "%directory%" ( echo.^(i^) Work directory: "%directory%"
 ) else echo.^(^!^) Directory not found: "%directory%"
+echo.
+echo.
+echo.
+timeout /nobreak /t 1 >nul
+
+
+
 echo.^(i^) Completed^!
 pause>nul
 exit
