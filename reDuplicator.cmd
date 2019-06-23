@@ -9,12 +9,13 @@ set parameter=%parameter:"=%
 
 if exist "%parameter%" set directory=%parameter%
 
+if exist temp rd /s /q temp
+
 if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
 
 
 
 set module_rehash=modules\rehash.exe -norecur -none
-set report_duplicates=reports\duplicates.txt
 set temp_data=temp\data
 
 set filter_fileType_include=
@@ -26,10 +27,9 @@ set currentDate=%date%
 for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
 for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%j.%%i
 
-if exist reports rd /s /q reports
-if exist temp rd /s /q temp
-timeout /nobreak /t 1 >nul
-md reports
+set report_duplicates=reports\reDuplicator_%currentDate%.txt
+
+if not exist reports md reports
 md temp
 
 
