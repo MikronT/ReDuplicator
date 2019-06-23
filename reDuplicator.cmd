@@ -22,6 +22,10 @@ rem set filter_fileType_include=\*.jar
 set filter_fileType_exclude=
 rem set filter_fileType_exclude=.json
 
+set currentDate=%date%
+for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
+for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%j.%%i
+
 if exist reports rd /s /q reports
 if exist temp rd /s /q temp
 timeout /nobreak /t 1 >nul
