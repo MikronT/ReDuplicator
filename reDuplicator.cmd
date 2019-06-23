@@ -11,8 +11,15 @@ if exist "%parameter%" set directory=%parameter%
 
 if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
 
+
+
 set report_duplicates=reports\duplicates.txt
 set temp_data=temp\data
+
+set filter_fileType_include=
+rem set filter_fileType_include=\*.jar
+set filter_fileType_exclude=
+rem set filter_fileType_exclude=.json
 
 if exist reports rd /s /q reports
 if exist temp rd /s /q temp
