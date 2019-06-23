@@ -147,6 +147,24 @@ exit /b
 
 :menu_settings
 call :logo
+echo.^(i^) Settings Menu
+echo.
+echo.
+echo.    Filters:
+echo.    ^(1^) Include: %setting_filter_include%
+echo.    ^(2^) Exclude: %setting_filter_exclude%
+echo.
+echo.    ^(0^) Go back
+echo.
+echo.
+echo.
+set /p command=^(^>^) 
+
+
+
+if "%command%" == "0" ( set command= & exit /b )
+if "%command%" == "1" set /p setting_filter_include=^(^>^) Enter Include filter ^> 
+if "%command%" == "2" set /p setting_filter_exclude=^(^>^) Enter Exclude filter ^> 
 
 
 
