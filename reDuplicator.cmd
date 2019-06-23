@@ -21,8 +21,6 @@ set temp_data=temp\data
 set setting_debug=false
 set setting_filter_include=
 set setting_filter_exclude=
-rem set setting_filter_include=.jar
-rem set setting_filter_exclude=.json
 set settings=settings.ini
 
 
@@ -173,7 +171,7 @@ if "%command%" == "3" if "%setting_debug%" == "true" (
 
 
 
-echo.# ReDuplicator Settings #>>%settings%
+echo.# ReDuplicator Settings #>%settings%
 echo.debug=%setting_debug%>>%settings%
 echo.filter_include=%setting_filter_include%>>%settings%
 echo.filter_exclude=%setting_filter_exclude%>>%settings%
