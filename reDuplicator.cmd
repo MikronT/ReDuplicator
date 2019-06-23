@@ -48,6 +48,13 @@ timeout /nobreak /t 1 >nul
 
 
 if exist %report_duplicates% for /l %%i in (10,-1,1) do echo.>>%report_duplicates%
+echo.=============================================================================>>%report_duplicates%
+echo.ReDuplicator Log File ^| %currentDate%>>%report_duplicates%
+echo.>>%report_duplicates%
+echo.>>%report_duplicates%
+echo.>>%report_duplicates%
+
+
 
 for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%filter_fileType_include%"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp_data%
 
@@ -68,7 +75,7 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%filter_
             echo.
             echo.
 
-            echo.^(i^) Duplicates:>>%report_duplicates%
+            echo.Duplicates:>>%report_duplicates%
             echo.    %%i>>%report_duplicates%
             echo.        size: %%j bytes>>%report_duplicates%
             echo.        sha1:%%k>>%report_duplicates%
@@ -84,6 +91,10 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%filter_
     )
   )
 )
+
+
+
+echo.=============================================================================>>%report_duplicates%
 
 
 
