@@ -72,23 +72,22 @@ exit /b
 call :logo
 set command=
 
-echo.^(i^) Main Menu
-echo.
 echo.    ^(i^) Program directory: "%cd%"
-if exist "%directory%" ( echo.    ^(i^) Work directory: "%directory%"
+if exist "%directory%" ( echo.    ^(i^) Work directory:    "%directory%"
 ) else echo.    ^(^!^) Directory not found: "%directory%"
 echo.
+echo.^(i^) Main Menu
 echo.    ^(1^) Run scan
 echo.    ^(2^) Settings
 echo.
 echo.
 echo.
-set /p command=^(^>^) 
+set /p command= ^> 
 
 
 
 if "%command%" == "1" call :duplicatesScan
-if "%command%" == "2" call :settings
+if "%command%" == "2" call :menu_settings
 goto :menu_main
 
 
@@ -175,7 +174,6 @@ call :logo
 set command=
 
 echo.^(i^) Settings Menu
-echo.
 echo.    Filters:
 echo.      ^(1^) Include: %setting_filter_include%
 echo.      ^(2^) Exclude: %setting_filter_exclude%
@@ -186,7 +184,7 @@ echo.    ^(0^) Go back
 echo.
 echo.
 echo.
-set /p command=^(^>^) 
+set /p command= ^> 
 
 
 
