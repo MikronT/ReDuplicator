@@ -51,6 +51,11 @@ if exist %report_duplicates% for /l %%i in (10,-1,1) do echo.>>%report_duplicate
 echo.=============================================================================>>%report_duplicates%
 echo.ReDuplicator Log File ^| %currentDate%>>%report_duplicates%
 echo.>>%report_duplicates%
+echo.Variables:>>%report_duplicates%
+echo.  filter_fileType_include=%filter_fileType_include%>>%report_duplicates%
+echo.  filter_fileType_exclude=%filter_fileType_exclude%>>%report_duplicates%
+echo.  report_duplicates=%report_duplicates%>>%report_duplicates%
+echo.>>%report_duplicates%
 echo.>>%report_duplicates%
 echo.>>%report_duplicates%
 
