@@ -18,10 +18,10 @@ if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
 set module_rehash=modules\rehash.exe -norecur -none
 set temp_data=temp\data
 
-set setting_filter_fileType_include=
-set setting_filter_fileType_exclude=
-rem set setting_filter_fileType_include=.jar
-rem set setting_filter_fileType_exclude=.json
+set setting_filter_include=
+set setting_filter_exclude=
+rem set setting_filter_include=.jar
+rem set setting_filter_exclude=.json
 set settings=settings.ini
 
 
@@ -59,8 +59,8 @@ echo.===========================================================================
 echo.ReDuplicator Log File ^| %currentDate%>>%log_duplicates%
 echo.>>%log_duplicates%
 echo.Variables:>>%log_duplicates%
-echo.  setting_filter_fileType_include=%setting_filter_fileType_include%>>%log_duplicates%
-echo.  setting_filter_fileType_exclude=%setting_filter_fileType_exclude%>>%log_duplicates%
+echo.  setting_filter_include=%setting_filter_include%>>%log_duplicates%
+echo.  setting_filter_exclude=%setting_filter_exclude%>>%log_duplicates%
 echo.  log_duplicates=%log_duplicates%>>%log_duplicates%
 echo.>>%log_duplicates%
 echo.>>%log_duplicates%
@@ -68,12 +68,12 @@ echo.>>%log_duplicates%
 
 
 
-for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%setting_filter_fileType_include%"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp_data%
+for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%setting_filter_include%*"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp_data%
 
 
 
-for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%setting_filter_fileType_exclude%"') do (
-  for /f "tokens=1,2,* delims=;" %%o in ('type %temp_data% ^| find /i /v "%setting_filter_fileType_exclude%"') do (
+for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%setting_filter_exclude%"') do (
+  for /f "tokens=1,2,* delims=;" %%o in ('type %temp_data% ^| find /i /v "%setting_filter_exclude%"') do (
     if "%%i" NEQ "%%o" if "%%j" == "%%p" (
       for /f "skip=1 tokens=2* delims=:" %%k in ('%module_rehash% -sha1 "%%i"') do (
         for /f "skip=1 tokens=2* delims=:" %%q in ('%module_rehash% -sha1 "%%o"') do (
@@ -151,6 +151,6 @@ call :logo
 
 
 echo.# ReDuplicator Settings #>>%settings%
-echo.filter_fileType_include=%setting_filter_fileType_include%>>%settings%
-echo.filter_fileType_exclude=%setting_filter_fileType_exclude%>>%settings%
+echo.filter_include=%setting_filter_include%>>%settings%
+echo.filter_exclude=%setting_filter_exclude%>>%settings%
 goto :menu_settings
