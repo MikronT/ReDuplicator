@@ -42,6 +42,8 @@ timeout /nobreak /t 1 >nul
 
 
 
+for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%filter_fileType_include%"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp_data%
+
 
 
 echo.^(i^) Completed^!
