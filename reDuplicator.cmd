@@ -44,6 +44,17 @@ timeout /nobreak /t 1 >nul
 
 for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%filter_fileType_include%"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp_data%
 
+for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%filter_fileType_exclude%"') do (
+  for /f "tokens=1,2,* delims=;" %%o in ('type %temp_data% ^| find /i /v "%filter_fileType_exclude%"') do (
+    if "%%i" NEQ "%%o" if "%%j" == "%%p" (
+      echo.^(i^) Duplicates:
+      echo.    %%i ^| %%j bytes
+      echo.    %%o ^| %%p bytes
+      echo.
+    )
+  )
+)
+
 
 
 echo.^(i^) Completed^!
