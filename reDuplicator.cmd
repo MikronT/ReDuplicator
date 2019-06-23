@@ -36,30 +36,6 @@ for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%
 if not exist logs md logs>nul 2>nul
 md temp>nul 2>nul
 
-goto :menu_main
-exit
-
-
-
-
-
-
-
-:logo
-title [MikronT] ReDuplicator ^| %directory%
-color 0b
-cls
-echo.
-echo.
-echo.    [MikronT] ==^> ReDuplicator
-echo.   =============================
-echo.     See other here:
-echo.         github.com/MikronT
-echo.
-echo.
-echo.
-exit /b
-
 
 
 
@@ -224,7 +200,13 @@ if "%command%" == "2" (
 if "%command%" == "3" if "%setting_debug%" == "true" ( set setting_debug=false
 ) else set setting_debug=true
 
-call :settings_save
+
+
+echo.# ReDuplicator Settings #>%settings%
+echo.debug=%setting_debug%>>%settings%
+echo.filter_include=%setting_filter_include%>>%settings%
+echo.filter_exclude=%setting_filter_exclude%>>%settings%
+
 endlocal
 goto :menu_settings
 
@@ -232,17 +214,27 @@ goto :menu_settings
 
 
 
-:settings_import
-if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
+
+
+:logo
+title [MikronT] ReDuplicator ^| %directory%
+color 0b
+cls
+echo.
+echo.
+echo.    [MikronT] ==^> ReDuplicator
+echo.   =============================
+echo.     See other here:
+echo.         github.com/MikronT
+echo.
+echo.
+echo.
 exit /b
 
 
 
 
 
-:settings_save
-echo.# ReDuplicator Settings #>%settings%
-echo.debug=%setting_debug%>>%settings%
-echo.filter_include=%setting_filter_include%>>%settings%
-echo.filter_exclude=%setting_filter_exclude%>>%settings%
+:settings_import
+if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
 exit /b
