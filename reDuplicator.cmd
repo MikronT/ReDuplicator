@@ -4,6 +4,11 @@ chcp 65001>nul
 %~d0
 cd "%~dp0"
 
+set parameter=%1
+set parameter=%parameter:"=%
+
+if exist "%parameter%" set directory=%parameter%
+
 
 
 call :logo
@@ -19,6 +24,7 @@ exit
 
 
 :logo
+title [MikronT] ReDuplicator ^| %directory%
 color 0b
 cls
 echo.
