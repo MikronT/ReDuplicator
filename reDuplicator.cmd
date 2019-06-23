@@ -25,18 +25,16 @@ set settings=settings.ini
 
 
 
-if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
+call :settings_import
 
 set currentDate=%date%
 for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
 for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%j.%%i
 
-set log_duplicates=logs\reDuplicator_%currentDate%.txt
+
 
 if not exist logs md logs>nul 2>nul
 md temp>nul 2>nul
-
-
 
 goto :menu_main
 exit
@@ -102,8 +100,15 @@ goto :menu_main
 
 
 :duplicatesScan
-if exist %log_duplicates% for /l %%i in (10,-1,1) do echo.>>%log_duplicates%
-echo.=============================================================================>>%log_duplicates%
+set counter=0
+
+:log_name_cycle
+set /a counter+=1
+set log_duplicates=logs\reDuplicator_%currentDate%_%counter%.txt
+if exist "%log_duplicates%" goto :log_name_cycle
+
+
+
 echo.ReDuplicator Log File ^| %currentDate%>>%log_duplicates%
 echo.>>%log_duplicates%
 echo.>>%log_duplicates%
@@ -170,15 +175,11 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%setting
 
 
 
-echo.=============================================================================>>%log_duplicates%
-
-
-
 echo.^(i^) Completed^!
 if exist %log_duplicates% ( echo.^(i^) All info saved into the %log_duplicates% file
 ) else echo.^(i^) Any duplicates not found
 pause>nul
-exit
+exit /b
 
 
 
