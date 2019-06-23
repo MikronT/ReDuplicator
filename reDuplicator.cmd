@@ -42,6 +42,8 @@ timeout /nobreak /t 1 >nul
 
 
 
+if exist %report_duplicates% for /l %%i in (10,-1,1) do echo.>>%report_duplicates%
+
 for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%filter_fileType_include%"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp_data%
 
 for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%filter_fileType_exclude%"') do (
