@@ -188,7 +188,10 @@ exit
 
 :menu_settings
 call :logo
+set buffer=
 set command=
+
+call :settings_import
 
 echo.^(i^) Settings Menu
 echo.    Filters:
@@ -205,16 +208,40 @@ set /p command= ^>
 
 
 
+setlocal EnableDelayedExpansion
 if "%command%" == "0" ( set command= & exit /b )
-if "%command%" == "1" set /p setting_filter_include=^(^>^) Enter Include filter ^> 
-if "%command%" == "2" set /p setting_filter_exclude=^(^>^) Enter Exclude filter ^> 
+if "%command%" == "1" (
+  set /p buffer=^(^>^) Enter Include filter ^> 
+  if "!buffer!" == "" ( set setting_filter_include=
+  ) else set setting_filter_include=!buffer!
+)
+if "%command%" == "2" (
+  set /p buffer=^(^>^) Enter Exclude filter ^> 
+  if "!buffer!" == "" ( set setting_filter_exclude=
+  ) else set setting_filter_exclude=!buffer!
+)
 if "%command%" == "3" if "%setting_debug%" == "true" ( set setting_debug=false
 ) else set setting_debug=true
 
+call :settings_save
+endlocal
+goto :menu_settings
 
 
+
+
+
+:settings_import
+if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
+exit /b
+
+
+
+
+
+:settings_save
 echo.# ReDuplicator Settings #>%settings%
 echo.debug=%setting_debug%>>%settings%
 echo.filter_include=%setting_filter_include%>>%settings%
 echo.filter_exclude=%setting_filter_exclude%>>%settings%
-goto :menu_settings
+exit /b
