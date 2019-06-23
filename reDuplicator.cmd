@@ -144,6 +144,31 @@ exit /b
 
 
 
+:menu_main
+call :logo
+set command=
+
+echo.^(i^) Main Menu
+echo.
+echo.    ^(1^) Run scan
+echo.    ^(2^) Settings
+echo.
+echo.
+echo.
+set /p command=^(^>^) 
+
+
+
+if "%command%" == "1" rem
+if "%command%" == "2" rem
+goto :menu_main
+
+
+
+
+
+
+
 :menu_settings
 call :logo
 set command=
