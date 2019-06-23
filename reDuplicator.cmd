@@ -72,9 +72,14 @@ exit /b
 call :logo
 set command=
 
-echo.    ^(i^) Program directory: "%cd%"
-if exist "%directory%" ( echo.    ^(i^) Work directory:    "%directory%"
-) else echo.    ^(^!^) Directory not found: "%directory%"
+echo.^(i^) Program directory: "%cd%"
+if exist "%directory%" ( echo.^(i^) Work directory:    "%directory%"
+) else (
+  color 0c
+  echo.^(^!^) Directory not found: "%directory%"
+  pause>nul
+  exit
+)
 echo.
 echo.^(i^) Main Menu
 echo.    ^(1^) Run scan
