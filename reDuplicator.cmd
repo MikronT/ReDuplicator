@@ -11,6 +11,9 @@ if exist "%parameter%" set directory=%parameter%
 
 if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
 
+set report_duplicates=reports\duplicates.txt
+set temp_data=temp\data
+
 if exist reports rd /s /q reports
 if exist temp rd /s /q temp
 timeout /nobreak /t 1 >nul
