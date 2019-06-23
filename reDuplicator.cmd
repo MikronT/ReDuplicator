@@ -27,9 +27,9 @@ set currentDate=%date%
 for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
 for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%j.%%i
 
-set report_duplicates=reports\reDuplicator_%currentDate%.txt
+set log_duplicates=logs\reDuplicator_%currentDate%.txt
 
-if not exist reports md reports
+if not exist logs md logs
 md temp
 
 
@@ -47,17 +47,17 @@ timeout /nobreak /t 1 >nul
 
 
 
-if exist %report_duplicates% for /l %%i in (10,-1,1) do echo.>>%report_duplicates%
-echo.=============================================================================>>%report_duplicates%
-echo.ReDuplicator Log File ^| %currentDate%>>%report_duplicates%
-echo.>>%report_duplicates%
-echo.Variables:>>%report_duplicates%
-echo.  filter_fileType_include=%filter_fileType_include%>>%report_duplicates%
-echo.  filter_fileType_exclude=%filter_fileType_exclude%>>%report_duplicates%
-echo.  report_duplicates=%report_duplicates%>>%report_duplicates%
-echo.>>%report_duplicates%
-echo.>>%report_duplicates%
-echo.>>%report_duplicates%
+if exist %log_duplicates% for /l %%i in (10,-1,1) do echo.>>%log_duplicates%
+echo.=============================================================================>>%log_duplicates%
+echo.ReDuplicator Log File ^| %currentDate%>>%log_duplicates%
+echo.>>%log_duplicates%
+echo.Variables:>>%log_duplicates%
+echo.  filter_fileType_include=%filter_fileType_include%>>%log_duplicates%
+echo.  filter_fileType_exclude=%filter_fileType_exclude%>>%log_duplicates%
+echo.  log_duplicates=%log_duplicates%>>%log_duplicates%
+echo.>>%log_duplicates%
+echo.>>%log_duplicates%
+echo.>>%log_duplicates%
 
 
 
@@ -80,16 +80,16 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%filter_
             echo.
             echo.
 
-            echo.Duplicates:>>%report_duplicates%
-            echo.    %%i>>%report_duplicates%
-            echo.        size: %%j bytes>>%report_duplicates%
-            echo.        sha1:%%k>>%report_duplicates%
-            echo.    %%o>>%report_duplicates%
-            echo.        size: %%p bytes>>%report_duplicates%
-            echo.        sha1:%%q>>%report_duplicates%
-            echo.>>%report_duplicates%
-            echo.>>%report_duplicates%
-            echo.>>%report_duplicates%
+            echo.Duplicates:>>%log_duplicates%
+            echo.    %%i>>%log_duplicates%
+            echo.        size: %%j bytes>>%log_duplicates%
+            echo.        sha1:%%k>>%log_duplicates%
+            echo.    %%o>>%log_duplicates%
+            echo.        size: %%p bytes>>%log_duplicates%
+            echo.        sha1:%%q>>%log_duplicates%
+            echo.>>%log_duplicates%
+            echo.>>%log_duplicates%
+            echo.>>%log_duplicates%
           )
         )
       )
@@ -99,12 +99,12 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%filter_
 
 
 
-echo.=============================================================================>>%report_duplicates%
+echo.=============================================================================>>%log_duplicates%
 
 
 
 echo.^(i^) Completed^!
-if exist %report_duplicates% ( echo.^(i^) All info saved into the %report_duplicates% file
+if exist %log_duplicates% ( echo.^(i^) All info saved into the %log_duplicates% file
 ) else echo.^(i^) Any duplicates not found
 pause>nul
 exit
