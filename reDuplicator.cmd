@@ -38,28 +38,75 @@ md temp>nul 2>nul
 
 
 
+goto :menu_main
+exit
 
 
 
 
+
+
+
+:logo
+title [MikronT] ReDuplicator ^| %directory%
+color 0b
+cls
+echo.
+echo.
+echo.    [MikronT] ==^> ReDuplicator
+echo.   =============================
+echo.     See other here:
+echo.         github.com/MikronT
+echo.
+echo.
+echo.
+exit /b
+
+
+
+
+
+
+
+:menu_main
 call :logo
-echo.^(i^) Program directory: "%cd%"
-if exist "%directory%" ( echo.^(i^) Work directory: "%directory%"
-) else echo.^(^!^) Directory not found: "%directory%"
+set command=
+
+echo.^(i^) Main Menu
+echo.
+echo.    ^(i^) Program directory: "%cd%"
+if exist "%directory%" ( echo.    ^(i^) Work directory: "%directory%"
+) else echo.    ^(^!^) Directory not found: "%directory%"
+echo.
+echo.    ^(1^) Run scan
+echo.    ^(2^) Settings
 echo.
 echo.
 echo.
-timeout /nobreak /t 1 >nul
+set /p command=^(^>^) 
 
 
 
+if "%command%" == "1" call :duplicatesScan
+if "%command%" == "2" call :settings
+goto :menu_main
+
+
+
+
+
+
+
+:duplicatesScan
 if exist %log_duplicates% for /l %%i in (10,-1,1) do echo.>>%log_duplicates%
 echo.=============================================================================>>%log_duplicates%
 echo.ReDuplicator Log File ^| %currentDate%>>%log_duplicates%
 echo.>>%log_duplicates%
+echo.>>%log_duplicates%
 echo.Variables:>>%log_duplicates%
-echo.  setting_filter_include=%setting_filter_include%>>%log_duplicates%
-echo.  setting_filter_exclude=%setting_filter_exclude%>>%log_duplicates%
+echo.  debug=%setting_debug%>>%log_duplicates%
+echo.  filter_include=%setting_filter_include%>>%log_duplicates%
+echo.  filter_exclude=%setting_filter_exclude%>>%log_duplicates%
 echo.  log_duplicates=%log_duplicates%>>%log_duplicates%
 echo.>>%log_duplicates%
 echo.>>%log_duplicates%
@@ -115,53 +162,7 @@ echo.^(i^) Completed^!
 if exist %log_duplicates% ( echo.^(i^) All info saved into the %log_duplicates% file
 ) else echo.^(i^) Any duplicates not found
 pause>nul
-exit
-
-
-
-
-
-
-
-:logo
-title [MikronT] ReDuplicator ^| %directory%
-color 0b
-cls
-echo.
-echo.
-echo.    [MikronT] ==^> ReDuplicator
-echo.   =============================
-echo.     See other here:
-echo.         github.com/MikronT
-echo.
-echo.
-echo.
 exit /b
-
-
-
-
-
-
-
-:menu_main
-call :logo
-set command=
-
-echo.^(i^) Main Menu
-echo.
-echo.    ^(1^) Run scan
-echo.    ^(2^) Settings
-echo.
-echo.
-echo.
-set /p command=^(^>^) 
-
-
-
-if "%command%" == "1" rem
-if "%command%" == "2" rem
-goto :menu_main
 
 
 
@@ -192,8 +193,7 @@ set /p command=^(^>^)
 if "%command%" == "0" ( set command= & exit /b )
 if "%command%" == "1" set /p setting_filter_include=^(^>^) Enter Include filter ^> 
 if "%command%" == "2" set /p setting_filter_exclude=^(^>^) Enter Exclude filter ^> 
-if "%command%" == "3" if "%setting_debug%" == "true" (
-  set setting_debug=false
+if "%command%" == "3" if "%setting_debug%" == "true" ( set setting_debug=false
 ) else set setting_debug=true
 
 
