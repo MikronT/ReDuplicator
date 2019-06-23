@@ -50,14 +50,18 @@ for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%filter_fileType_include
 for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%filter_fileType_exclude%"') do (
   for /f "tokens=1,2,* delims=;" %%o in ('type %temp_data% ^| find /i /v "%filter_fileType_exclude%"') do (
     if "%%i" NEQ "%%o" if "%%j" == "%%p" (
-      echo.^(i^) Duplicates:
-      echo.    %%i ^| %%j bytes
-      echo.    %%o ^| %%p bytes
-      echo.
-      echo.^(i^) Duplicates:>>%report_duplicates%
-      echo.    %%i ^| %%j bytes>>%report_duplicates%
-      echo.    %%o ^| %%p bytes>>%report_duplicates%
-      echo.>>%report_duplicates%
+      for /f "skip=1 tokens=2* delims=:" %%k in ('%module_rehash% -sha1 "%%i"') do (
+        for /f "skip=1 tokens=2* delims=:" %%q in ('%module_rehash% -sha1 "%%o"') do (
+          echo.^(i^) Duplicates:
+          echo.    %%i ^| %%j bytes ^| sha1: %%k
+          echo.    %%o ^| %%p bytes ^| sha1: %%q
+          echo.
+          echo.^(i^) Duplicates:>>%report_duplicates%
+          echo.    %%i ^| %%j bytes ^| sha1: %%k>>%report_duplicates%
+          echo.    %%o ^| %%p bytes ^| sha1: %%q>>%report_duplicates%
+          echo.>>%report_duplicates%
+        )
+      )
     )
   )
 )
