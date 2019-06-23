@@ -11,6 +11,12 @@ if exist "%parameter%" set directory=%parameter%
 
 if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
 
+if exist reports rd /s /q reports
+if exist temp rd /s /q temp
+timeout /nobreak /t 1 >nul
+md reports
+md temp
+
 
 
 
