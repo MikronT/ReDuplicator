@@ -16,13 +16,13 @@ if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
 
 
 set module_rehash=modules\rehash.exe -norecur -none
-set settings=settings.ini
 set temp_data=temp\data
 
 set setting_filter_fileType_include=
-rem set setting_filter_fileType_include=\*.jar
 set setting_filter_fileType_exclude=
+rem set setting_filter_fileType_include=.jar
 rem set setting_filter_fileType_exclude=.json
+set settings=settings.ini
 
 
 
@@ -34,8 +34,8 @@ for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%
 
 set log_duplicates=logs\reDuplicator_%currentDate%.txt
 
-if not exist logs md logs
-md temp
+if not exist logs md logs>nul 2>nul
+md temp>nul 2>nul
 
 
 
