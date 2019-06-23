@@ -16,12 +16,13 @@ if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
 
 
 set module_rehash=modules\rehash.exe -norecur -none
+set settings=settings.ini
 set temp_data=temp\data
 
-set filter_fileType_include=
-rem set filter_fileType_include=\*.jar
-set filter_fileType_exclude=
-rem set filter_fileType_exclude=.json
+set setting_filter_fileType_include=
+rem set setting_filter_fileType_include=\*.jar
+set setting_filter_fileType_exclude=
+rem set setting_filter_fileType_exclude=.json
 
 set currentDate=%date%
 for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
@@ -52,8 +53,8 @@ echo.===========================================================================
 echo.ReDuplicator Log File ^| %currentDate%>>%log_duplicates%
 echo.>>%log_duplicates%
 echo.Variables:>>%log_duplicates%
-echo.  filter_fileType_include=%filter_fileType_include%>>%log_duplicates%
-echo.  filter_fileType_exclude=%filter_fileType_exclude%>>%log_duplicates%
+echo.  setting_filter_fileType_include=%setting_filter_fileType_include%>>%log_duplicates%
+echo.  setting_filter_fileType_exclude=%setting_filter_fileType_exclude%>>%log_duplicates%
 echo.  log_duplicates=%log_duplicates%>>%log_duplicates%
 echo.>>%log_duplicates%
 echo.>>%log_duplicates%
@@ -61,10 +62,12 @@ echo.>>%log_duplicates%
 
 
 
-for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%filter_fileType_include%"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp_data%
+for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%setting_filter_fileType_include%"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp_data%
 
-for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%filter_fileType_exclude%"') do (
-  for /f "tokens=1,2,* delims=;" %%o in ('type %temp_data% ^| find /i /v "%filter_fileType_exclude%"') do (
+
+
+for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%setting_filter_fileType_exclude%"') do (
+  for /f "tokens=1,2,* delims=;" %%o in ('type %temp_data% ^| find /i /v "%setting_filter_fileType_exclude%"') do (
     if "%%i" NEQ "%%o" if "%%j" == "%%p" (
       for /f "skip=1 tokens=2* delims=:" %%k in ('%module_rehash% -sha1 "%%i"') do (
         for /f "skip=1 tokens=2* delims=:" %%q in ('%module_rehash% -sha1 "%%o"') do (
