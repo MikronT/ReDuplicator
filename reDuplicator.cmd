@@ -107,13 +107,15 @@ echo.===========================================================================
 echo.ReDuplicator Log File ^| %currentDate%>>%log_duplicates%
 echo.>>%log_duplicates%
 echo.>>%log_duplicates%
-echo.Variables:>>%log_duplicates%
-echo.  debug=%setting_debug%>>%log_duplicates%
-echo.  filter_include=%setting_filter_include%>>%log_duplicates%
-echo.  filter_exclude=%setting_filter_exclude%>>%log_duplicates%
-echo.  log_duplicates=%log_duplicates%>>%log_duplicates%
-echo.>>%log_duplicates%
-echo.>>%log_duplicates%
+if "%setting_debug%" == "true" (
+  echo.Variables:>>%log_duplicates%
+  echo.  debug=%setting_debug%>>%log_duplicates%
+  echo.  filter_include=%setting_filter_include%>>%log_duplicates%
+  echo.  filter_exclude=%setting_filter_exclude%>>%log_duplicates%
+  echo.  log_duplicates=%log_duplicates%>>%log_duplicates%
+  echo.>>%log_duplicates%
+  echo.>>%log_duplicates%
+)
 echo.>>%log_duplicates%
 
 
@@ -129,24 +131,34 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%setting
         for /f "skip=1 tokens=2* delims=:" %%q in ('%module_rehash% -sha1 "%%o"') do (
           if "%%k" == "%%q" (
             echo.^(i^) Duplicates:
-            echo.    %%i
-            echo.        size: %%j bytes
-            echo.        sha1:%%k
-            echo.    %%o
-            echo.        size: %%p bytes
-            echo.        sha1:%%q
-            echo.
+            if "%setting_debug%" == "false" (
+              echo.    %%i
+              echo.    %%o
+            ) else (
+              echo.    %%i
+              echo.        size: %%j bytes
+              echo.        sha1:%%k
+              echo.    %%o
+              echo.        size: %%p bytes
+              echo.        sha1:%%q
+              echo.
+            )
             echo.
             echo.
 
             echo.Duplicates:>>%log_duplicates%
-            echo.    %%i>>%log_duplicates%
-            echo.        size: %%j bytes>>%log_duplicates%
-            echo.        sha1:%%k>>%log_duplicates%
-            echo.    %%o>>%log_duplicates%
-            echo.        size: %%p bytes>>%log_duplicates%
-            echo.        sha1:%%q>>%log_duplicates%
-            echo.>>%log_duplicates%
+            if "%setting_debug%" == "false" (
+              echo.    %%i>>%log_duplicates%
+              echo.    %%o>>%log_duplicates%
+            ) else (
+              echo.    %%i
+              echo.        size: %%j bytes
+              echo.        sha1:%%k
+              echo.    %%o
+              echo.        size: %%p bytes
+              echo.        sha1:%%q
+              echo.
+            )>>%log_duplicates%
             echo.>>%log_duplicates%
             echo.>>%log_duplicates%
           )
@@ -166,7 +178,7 @@ echo.^(i^) Completed^!
 if exist %log_duplicates% ( echo.^(i^) All info saved into the %log_duplicates% file
 ) else echo.^(i^) Any duplicates not found
 pause>nul
-exit /b
+exit
 
 
 
