@@ -18,6 +18,7 @@ if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
 set module_rehash=modules\rehash.exe -norecur -none
 set temp_data=temp\data
 
+set setting_debug=false
 set setting_filter_include=
 set setting_filter_exclude=
 rem set setting_filter_include=.jar
@@ -149,10 +150,11 @@ exit /b
 call :logo
 echo.^(i^) Settings Menu
 echo.
-echo.
 echo.    Filters:
-echo.    ^(1^) Include: %setting_filter_include%
-echo.    ^(2^) Exclude: %setting_filter_exclude%
+echo.      ^(1^) Include: %setting_filter_include%
+echo.      ^(2^) Exclude: %setting_filter_exclude%
+echo.
+echo.    ^(3^) Debug: %setting_debug%
 echo.
 echo.    ^(0^) Go back
 echo.
@@ -165,10 +167,14 @@ set /p command=^(^>^)
 if "%command%" == "0" ( set command= & exit /b )
 if "%command%" == "1" set /p setting_filter_include=^(^>^) Enter Include filter ^> 
 if "%command%" == "2" set /p setting_filter_exclude=^(^>^) Enter Exclude filter ^> 
+if "%command%" == "3" if "%setting_debug%" == "true" (
+  set setting_debug=false
+) else set setting_debug=true
 
 
 
 echo.# ReDuplicator Settings #>>%settings%
+echo.debug=%setting_debug%>>%settings%
 echo.filter_include=%setting_filter_include%>>%settings%
 echo.filter_exclude=%setting_filter_exclude%>>%settings%
 goto :menu_settings
