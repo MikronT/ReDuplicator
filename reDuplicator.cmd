@@ -21,7 +21,9 @@ set temp_data=temp\data
 set setting_debug=false
 set setting_filter_include=
 set setting_filter_exclude=
+
 set settings=settings.ini
+set settings_import=if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
 
 
 
@@ -30,7 +32,7 @@ md temp>nul 2>nul
 
 
 
-call :settings_import
+%settings_import%
 
 set currentDate=%date%
 for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
@@ -189,7 +191,7 @@ call :logo
 set buffer=
 set command=
 
-call :settings_import
+%settings_import%
 
 echo.^(i^) Settings Menu
 echo.    Filters:
@@ -252,16 +254,4 @@ echo.         github.com/MikronT
 echo.
 echo.
 echo.
-exit /b
-
-
-
-
-
-
-
-
-
-:settings_import
-if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
 exit /b
