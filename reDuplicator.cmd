@@ -111,6 +111,8 @@ echo.^(i^) Getting directory tree...
 for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%setting_filter_include%*"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp_data%
 
 
+
+
 echo.^(i^) Starting files comparing...
 
 for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%setting_filter_exclude%"') do (
@@ -160,8 +162,10 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%setting
 
 
 echo.^(i^) Completed^!
+
 if exist %log_duplicates% ( echo.^(i^) All info saved into the %log_duplicates% file
-) else echo.^(i^) Any duplicates not found
+) else echo.^(^!^) Any duplicates not found
+
 pause>nul
 exit /b
 
