@@ -65,7 +65,7 @@ set /p command= ^>
 
 
 
-if "%command%" == "1" call :duplicatesScan
+if "%command%" == "1" call :scan
 if "%command%" == "2" call :menu_settings
 goto :menu_main
 
@@ -75,7 +75,9 @@ goto :menu_main
 
 
 
-:duplicatesScan
+
+
+:scan
 set counter=0
 
 :log_name_cycle
@@ -163,6 +165,8 @@ exit /b
 
 
 
+
+
 :menu_settings
 call :logo
 set buffer=
@@ -216,6 +220,8 @@ goto :menu_settings
 
 
 
+
+
 :logo
 title [MikronT] ReDuplicator ^| %directory%
 color 0b
@@ -230,6 +236,10 @@ echo.
 echo.
 echo.
 exit /b
+
+
+
+
 
 
 
