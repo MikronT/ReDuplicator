@@ -110,6 +110,7 @@ echo.^(i^) Getting directory tree...
 
 for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%setting_filter_include%*"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp_data%
 
+for /f "delims=" %%i in ("temp\data") do echo.^(i^) Directory tree data size: %%~zi bytes
 
 
 
@@ -169,6 +170,7 @@ if exist %log_duplicates% ( echo.^(i^) All info saved into the %log_duplicates% 
 ) else echo.^(^!^) Any duplicates not found
 
 echo.^(i^) Files scanned: %counter%
+for /f "delims=" %%i in ("%log_duplicates%") do echo.^(i^) Log file size: %%~zi bytes
 pause>nul
 exit /b
 
