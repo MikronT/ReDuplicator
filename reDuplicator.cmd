@@ -114,8 +114,10 @@ for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%setting_filter_include%
 
 
 echo.^(i^) Starting files comparing...
+set counter=0
 
 for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%setting_filter_exclude%"') do (
+  set /a counter+=1
   for /f "tokens=1,2,* delims=;" %%o in ('type %temp_data% ^| find /i /v "%setting_filter_exclude%"') do (
     if "%%i" NEQ "%%o" if "%%j" == "%%p" (
       for /f "skip=1 tokens=2* delims=:" %%k in ('%module_rehash% -sha1 "%%i"') do (
@@ -166,6 +168,7 @@ echo.^(i^) Completed^!
 if exist %log_duplicates% ( echo.^(i^) All info saved into the %log_duplicates% file
 ) else echo.^(^!^) Any duplicates not found
 
+echo.^(i^) Files scanned: %counter%
 pause>nul
 exit /b
 
