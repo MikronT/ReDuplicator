@@ -9,8 +9,6 @@ set parameter=%parameter:"=%
 
 if exist "%parameter%" set directory=%parameter%
 
-if exist temp rd /s /q temp
-
 if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
 
 
@@ -26,6 +24,8 @@ set settings=settings.ini
 set settings_import=if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
 
 
+
+if exist temp rd /s /q temp
 
 if not exist logs md logs>nul 2>nul
 md temp>nul 2>nul
