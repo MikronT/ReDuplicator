@@ -25,6 +25,11 @@ set settings=settings.ini
 
 
 
+if not exist logs md logs>nul 2>nul
+md temp>nul 2>nul
+
+
+
 call :settings_import
 
 set currentDate=%date%
@@ -33,8 +38,6 @@ for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%
 
 
 
-if not exist logs md logs>nul 2>nul
-md temp>nul 2>nul
 
 
 
