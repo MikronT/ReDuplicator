@@ -9,8 +9,6 @@ set parameter=%parameter:"=%
 
 if exist "%parameter%" set directory=%parameter%
 
-if "%parameter%" NEQ "/max" ( start /max "" "%~nx0" /max & exit )
-
 
 
 set module_rehash=modules\rehash.exe -norecur -none
