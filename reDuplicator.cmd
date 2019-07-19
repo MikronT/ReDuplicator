@@ -342,9 +342,11 @@ if "%setting_filter_exclude%" == "" ( echo.      ^(2^) Exclude: [nothing]
 ) else echo.      ^(2^) Exclude: %setting_filter_exclude%
 
 echo.
-echo.    ^(3^) Debug: %setting_debug%
-if "%setting_multithreading%" == "1" ( echo.    ^(4^) Multithreading: false
-) else echo.    ^(4^) Multithreading ^(threads^): %setting_multithreading%
+
+if "%setting_multithreading%" == "1" ( echo.    ^(3^) Multithreading: false
+) else echo.    ^(3^) Multithreading ^(threads^): %setting_multithreading%
+
+echo.    ^(4^) Debug: %setting_debug%
 echo.
 echo.    ^(0^) Go back
 echo.
@@ -366,15 +368,15 @@ if "%command%" == "2" (
   if "!buffer!" == "" ( set setting_filter_exclude=
   ) else set setting_filter_exclude=!buffer!
 )
-if "%command%" == "3" if "%setting_debug%" == "true" ( set setting_debug=false
-) else set setting_debug=true
-if "%command%" == "4" (
+if "%command%" == "3" (
          if "%setting_multithreading%" == "1" ( set setting_multithreading=2
   ) else if "%setting_multithreading%" == "2" ( set setting_multithreading=3
   ) else if "%setting_multithreading%" == "3" ( set setting_multithreading=4
   ) else if "%setting_multithreading%" == "4" ( set setting_multithreading=5
   ) else if "%setting_multithreading%" == "5"   set setting_multithreading=1
 )
+if "%command%" == "4" if "%setting_debug%" == "true" ( set setting_debug=false
+) else set setting_debug=true
 
 
 
@@ -383,7 +385,7 @@ echo.>>%settings%
 echo.debug=%setting_debug%>>%settings%
 echo.filter_include=%setting_filter_include%>>%settings%
 echo.filter_exclude=%setting_filter_exclude%>>%settings%
-echo.multithreading_threads=%setting_multithreading%i>>%settings%
+echo.multithreading=%setting_multithreading%i>>%settings%
 
 endlocal
 goto :screen_settings
