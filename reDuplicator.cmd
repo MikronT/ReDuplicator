@@ -15,11 +15,6 @@ set setting_filter_exclude=
 
 set settings=settings.ini
 
-:cycle_sessionSet
-set session=%random%%random%
-set temp=temp\session-%session%
-if exist "%temp%" goto :cycle_sessionSet
-
 set module_rehash=modules\rehash.exe -norecur -none
 
 set directoryChecker=call :directoryChecker
@@ -45,6 +40,13 @@ if exist "%argument%" ( set directory=%argument%
 
 
 if "%key_call%" == "scan" call :scan
+
+
+
+:cycle_sessionSet
+set session=%random%%random%
+set temp=temp\session-%session%
+if exist "%temp%" goto :cycle_sessionSet
 
 
 
@@ -318,9 +320,9 @@ exit /b
 
 :directoryChecker
 if exist "%directory%" (
-  if not exist %temp% md %temp%
-  echo.%directory%>%temp%\directory
-  for /f "delims=" %%i in ("%temp%\directory") do if "%%~zi" == "5" set directory=%directory:\=%
+  if not exist temp md temp
+  echo.%directory%>temp\directory
+  for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
 )
 exit /b
 
