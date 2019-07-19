@@ -43,6 +43,8 @@ if exist "%argument%" ( set directory=%argument%
 
 
 
+if "%key_call%" == "scan" call :scan
+
 
 
 if exist %temp% rd /s /q %temp%
@@ -91,9 +93,40 @@ echo.
 
 
 
-if "%command%" == "1" call :scan
+if "%command%" == "1" (
+  start "%~dpnx0" --call=scan
+  call :screen_scan
+)
 if "%command%" == "2" call :screen_settings
 goto :screen_main
+
+
+
+
+
+
+
+
+
+:screen_scan
+%logo%
+
+type %temp%\messages
+
+if exist "%temp%\completed" (
+  echo.
+  echo.
+  echo.
+  echo.^(i^) Press Enter to go to the main menu
+  pause>nul
+  echo.>%temp%\closed
+  exit /b
+)
+
+
+
+timeout /t 3 >nul
+goto :screen_scan
 
 
 
@@ -114,7 +147,7 @@ if exist "%log_duplicates%" goto :cycle_log_name
 
 
 
-echo.^(i^) Getting directory tree...
+echo.^(i^) Getting directory tree...>>%temp%\messages
 
 for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%setting_filter_include%*"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp%\data
 
@@ -122,7 +155,7 @@ for /f "delims=" %%i in ("%temp%\data") do echo.^(i^) Directory tree data size: 
 
 
 
-echo.^(i^) Starting files comparing...
+echo.^(i^) Starting files comparing...>>%temp%\messages
 set counter=0
 
 for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting_filter_exclude%"') do (
@@ -175,14 +208,20 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
 
 
 echo.^(i^) Completed^!
+echo.^(i^) Completed^!>>%temp%\messages
+echo.>%temp%\completed
 
-if exist %log_duplicates% ( echo.^(i^) All info saved into the %log_duplicates% file
-) else echo.^(^!^) Any duplicates not found
+if exist %log_duplicates% ( echo.^(i^) All info saved into the %log_duplicates% file>>%temp%\messages
+) else echo.^(^!^) Any duplicates not found>>%temp%\messages
 
-echo.^(i^) Files scanned: %counter%
-for /f "delims=" %%i in ("%log_duplicates%") do echo.^(i^) Log file size: %%~zi bytes
-pause>nul
-exit /b
+echo.^(i^) Files scanned: %counter%>>%temp%\messages
+for /f "delims=" %%i in ("%log_duplicates%") do echo.^(i^) Log file size: %%~zi bytes>>%temp%\messages
+
+
+
+:cycle_closeWait
+if exist "%temp%\closed" exit
+goto :cycle_closeWait
 
 
 
