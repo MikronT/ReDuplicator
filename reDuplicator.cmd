@@ -243,9 +243,9 @@ set buffer=
 echo.^(i^) Settings Menu
 echo.    Filters:
 
-if "%setting_filter_include%" == "" ( echo.      ^(1^) Include: all
+if "%setting_filter_include%" == "" ( echo.      ^(1^) Include: [all]
 ) else echo.      ^(1^) Include: %setting_filter_include%
-if "%setting_filter_exclude%" == "" ( echo.      ^(2^) Exclude: nothing
+if "%setting_filter_exclude%" == "" ( echo.      ^(2^) Exclude: [nothing]
 ) else echo.      ^(2^) Exclude: %setting_filter_exclude%
 
 echo.
