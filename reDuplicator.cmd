@@ -96,10 +96,9 @@ goto :screen_main
 %logo%
 set counter=0
 
-:log_name_cycle
+:cycle_log_name
 set /a counter+=1
 set log_duplicates=logs\reDuplicator_%currentDate%_%counter%.txt
-if exist "%log_duplicates%" goto :log_name_cycle
 
 
 
@@ -116,6 +115,7 @@ if "%setting_debug%" == "true" (
   echo.>>%log_duplicates%
 )
 echo.>>%log_duplicates%
+if exist "%log_duplicates%" goto :cycle_log_name
 
 
 
