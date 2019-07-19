@@ -22,7 +22,7 @@ set module_rehash=modules\rehash.exe -norecur -none
 set input=set /p command= ^^^> 
 set input_clear=set command=
 set logo=call :logo
-set settings_import=if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
+set settings_import=call :settings_import
 
 
 
@@ -345,6 +345,8 @@ if "%setting_filter_exclude%" == "" ( echo.      ^(2^) Exclude: [nothing]
 
 echo.
 echo.    ^(3^) Debug: %setting_debug%
+echo.    ^(4^) Multithreading: %setting_multithreading%
+if "%setting_multithreading%" == "true" echo.      ^(5^) Threads: %setting_multithreading_threads%
 echo.
 echo.    ^(0^) Go back
 echo.
@@ -368,16 +370,25 @@ if "%command%" == "2" (
 )
 if "%command%" == "3" if "%setting_debug%" == "true" ( set setting_debug=false
 ) else set setting_debug=true
+if "%command%" == "4" if "%setting_multithreading%" == "true" ( set setting_multithreading=false
+) else set setting_multithreading=true
+if "%command%" == "5" (
+         if "%setting_multithreading_threads%" == "1" ( set setting_multithreading_threads=2
+  ) else if "%setting_multithreading_threads%" == "2" ( set setting_multithreading_threads=3
+  ) else if "%setting_multithreading_threads%" == "3" ( set setting_multithreading_threads=4
+  ) else if "%setting_multithreading_threads%" == "4" ( set setting_multithreading_threads=5
+  ) else if "%setting_multithreading_threads%" == "5"   set setting_multithreading_threads=1
+)
 
 
 
 echo.# ReDuplicator Settings #>%settings%
-echo.
+echo.>>%settings%
 echo.debug=%setting_debug%>>%settings%
 echo.filter_include=%setting_filter_include%>>%settings%
 echo.filter_exclude=%setting_filter_exclude%>>%settings%
 echo.multithreading=%setting_multithreading%>>%settings%
-echo.multithreading_threads=%setting_multithreading_threads%>>%settings%
+echo.multithreading_threads=%setting_multithreading_threads%i>>%settings%
 
 endlocal
 goto :screen_settings
@@ -405,6 +416,19 @@ echo.         github.com/MikronT
 echo.
 echo.
 echo.
+exit /b
+
+
+
+
+
+
+
+
+
+:settings_import
+if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
+for /f "delims=i" %%i in ("%setting_multithreading_threads%") do set setting_multithreading_threads=%%i
 exit /b
 
 
