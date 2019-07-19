@@ -113,15 +113,15 @@ goto :screen_main
 
 
 :screen_scan
-%logo%
-
 set counter_duplicates=0
 for /l %%i in (1, 1, %setting_multithreading_threads%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j
+set counter_filesScanned=0
+for /l %%i in (1, 1, %setting_multithreading_threads%) do if exist %temp%\counter_filesScanned%%i for /f "delims=" %%j in (%temp%\counter_filesScanned%%i) do set /a counter_filesScanned+=%%j
 
-echo.
+%logo%
 if exist %temp%\messages type %temp%\messages
 echo.
-if exist %temp%\counter_filesScanned1 for /f "delims=" %%i in (%temp%\counter_filesScanned1) do echo.^(i^) Files scanned:   %%i
+echo.^(i^) Files scanned:   %counter_filesScanned%
 echo.^(i^) Duplicate pairs: %counter_duplicates%
 echo.
 
@@ -221,6 +221,7 @@ exit
 :scan
 %logo%
 title %app_name% Thread %1
+
 setlocal EnableDelayedExpansion
 set counter_filesScanned=0
 set counter_duplicates=0
