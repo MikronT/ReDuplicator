@@ -176,7 +176,6 @@ echo.>>%temp%\messages
 
 
 echo.^(i^) Initialization...>>%temp%\messages
-timeout /nobreak /t 3 >nul
 
 set /a multithreading_linesPerThread=%counter_dataLines%/%setting_multithreading%+1
 set counter_thread=1
