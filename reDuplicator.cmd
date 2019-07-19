@@ -111,12 +111,16 @@ goto :screen_main
 %logo%
 
 if exist %temp%\messages type %temp%\messages
-
 echo.
 if exist %temp%\counter_filesScanned for /f "delims=" %%i in (%temp%\counter_filesScanned) do echo.^(i^) Files scanned:   %%i
 if exist %temp%\counter_duplicates   for /f "delims=" %%i in (%temp%\counter_duplicates) do   echo.^(i^) Duplicate pairs: %%i
+echo.
 
 if exist "%temp%\session_completed" (
+  if exist %log_duplicates% (
+    echo.^(i^) All info saved into the %log_duplicates% file>>%temp%\messages
+    for /f "delims=" %%i in ("%log_duplicates%") do echo.^(i^) Log file size: %%~zi bytes>>%temp%\messages
+  ) else echo.^(^!^) Any duplicates not found>>%temp%\messages
   echo.
   echo.
   echo.
@@ -233,14 +237,7 @@ echo.>%temp%\session_completed
 
 
 echo.^(i^) Scan completed^!
-
 echo.^(i^) Completed^!>>%temp%\messages
-echo.>>%temp%\messages
-
-if exist %log_duplicates% (
-  echo.^(i^) All info saved into the %log_duplicates% file>>%temp%\messages
-  for /f "delims=" %%i in ("%log_duplicates%") do echo.^(i^) Log file size: %%~zi bytes>>%temp%\messages
-) else echo.^(^!^) Any duplicates not found>>%temp%\messages
 
 
 
