@@ -98,7 +98,7 @@ echo.
 
 
 if "%command%" == "1" (
-  start "" "%~dpnx0" --call=scan_preparing
+  start /b "" "%~dpnx0" --call=scan_preparing
   call :screen_scan
 )
 if "%command%" == "2" call :screen_settings
@@ -117,6 +117,7 @@ set counter_duplicates=0
 for /l %%i in (1, 1, %setting_multithreading_threads%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j
 set counter_filesScanned=0
 for /l %%i in (1, 1, %setting_multithreading_threads%) do if exist %temp%\counter_filesScanned%%i for /f "delims=" %%j in (%temp%\counter_filesScanned%%i) do set /a counter_filesScanned+=%%j
+set /a counter_filesScanned/=%setting_multithreading_threads%
 
 %logo%
 if exist %temp%\messages type %temp%\messages
@@ -146,8 +147,6 @@ goto :screen_scan
 
 
 :scan_preparing
-%logo% Scan Controller
-
 echo.>%temp%\duplicates
 set counter_log=0
 
@@ -227,9 +226,9 @@ set counter_filesScanned=0
 set counter_duplicates=0
 
 for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting_filter_exclude%"') do (
+  set /a counter_filesScanned+=1
+  echo.!counter_filesScanned!>%temp%\counter_filesScanned%1
   for /f "tokens=1,2,* delims=;" %%o in ('type %temp%\data_thread%1 ^| find /i /v "%setting_filter_exclude%"') do (
-    set /a counter_filesScanned+=1
-    echo.!counter_filesScanned!>%temp%\counter_filesScanned%1
     if "%%i" NEQ "%%o" if "%%j" == "%%p" (
       for /f "skip=1 tokens=2* delims=:" %%k in ('%module_rehash% -sha1 "%%i"') do (
         for /f "skip=1 tokens=2* delims=:" %%q in ('%module_rehash% -sha1 "%%o"') do (
