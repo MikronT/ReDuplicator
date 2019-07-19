@@ -55,15 +55,19 @@ for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%
 
 
 echo.^(i^) Program directory: "%cd%"
+echo.^(i^) Temp directory:    "%temp%"
 if exist "%directory%" ( echo.^(i^) Work directory:    "%directory%"
 ) else (
   color 0c
   echo.^(^!^) Directory not found: "%directory%"
+  echo.^(i^) Use Drag^&Drop: drag the directory onto the %~nx0 file
   pause>nul
   exit
 )
 echo.
+echo.
 echo.^(i^) Main Menu
+echo.
 echo.    ^(1^) Run scan
 echo.    ^(2^) Settings
 echo.
