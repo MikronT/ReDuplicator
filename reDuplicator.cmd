@@ -13,6 +13,8 @@ if exist "%parameter%" set directory=%parameter%
 
 set module_rehash=modules\rehash.exe -norecur -none
 set temp_data=temp\data
+set app_name=ReDuplicator
+set app_version=Pre-Alpha
 
 set setting_debug=false
 set setting_filter_include=
@@ -248,12 +250,13 @@ goto :menu_settings
 
 
 :logo
-title [MikronT] ReDuplicator ^| %directory%
+title [MikronT] %app_name% %app_version% ^| %directory%
 color 0b
 cls
 echo.
 echo.
-echo.    [MikronT] ==^> ReDuplicator
+echo.    [MikronT] ==^> %app_name%
+echo.                  %app_version%
 echo.   =============================
 echo.     See other here:
 echo.         github.com/MikronT
