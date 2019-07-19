@@ -12,7 +12,7 @@
 [![Latest Release](https://img.shields.io/badge/Latest-Release-blue.svg?style=for-the-badge)](https://github.com/MikronT/ReDuplicator/releases/latest)
 -->
 
-### Version name: *Alpha v1.0*
+### Version name: *Pre-Alpha*
 
 A small console tool that searches for duplicates in the following folder.
 
