@@ -112,6 +112,7 @@ goto :screen_main
 
 if exist %temp%\messages type %temp%\messages
 
+echo.
 if exist %temp%\counter_filesScanned for /f "delims=" %%i in (%temp%\counter_filesScanned) do echo.^(i^) Files scanned:   %%i
 if exist %temp%\counter_duplicates   for /f "delims=" %%i in (%temp%\counter_duplicates) do   echo.^(i^) Duplicate pairs: %%i
 
