@@ -158,6 +158,11 @@ echo.>>%temp%\messages
 
 
 
+echo.^(i^) Initialization...
+timeout /nobreak /t 3 >nul
+
+
+
 echo.^(i^) Starting files comparing...>>%temp%\messages
 
 setlocal EnableDelayedExpansion
