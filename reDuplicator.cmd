@@ -138,6 +138,8 @@ goto :screen_scan
 
 :scan
 %logo%
+echo.>%temp%\duplicates
+
 set counter_log=0
 
 :cycle_log_name
@@ -170,42 +172,47 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
       for /f "skip=1 tokens=2* delims=:" %%k in ('%module_rehash% -sha1 "%%i"') do (
         for /f "skip=1 tokens=2* delims=:" %%q in ('%module_rehash% -sha1 "%%o"') do (
           if "%%k" == "%%q" (
-            set /a counter_duplicates+=1
-            echo.!counter_duplicates!>%temp%\counter_duplicates
+            for /f "delims=" %%z in ('type %temp%\duplicates ^| find /i /c "%%i"') do if "%%z" == "0" (
+              set /a counter_duplicates+=1
+              echo.!counter_duplicates!>%temp%\counter_duplicates
 
-            echo.^(i^) Duplicates:
-            if "%setting_debug%" == "false" (
-              echo.    %%i
-              echo.    %%o
-            ) else (
-              echo.    %%i
-              echo.        size: %%j bytes
-              echo.        sha1:%%k
-              echo.    %%o
-              echo.        size: %%p bytes
-              echo.        sha1:%%q
+              echo.%%i>>%temp%\duplicates
+              echo.%%o>>%temp%\duplicates
+
+              echo.^(i^) Duplicates:
+              if "%setting_debug%" == "false" (
+                echo.    %%i
+                echo.    %%o
+              ) else (
+                echo.    %%i
+                echo.        size: %%j bytes
+                echo.        sha1:%%k
+                echo.    %%o
+                echo.        size: %%p bytes
+                echo.        sha1:%%q
+                echo.
+              )
               echo.
+              echo.
+
+              if not exist "%log_duplicates%" call :initiateLog
+
+              echo.Duplicates:>>%log_duplicates%
+              if "%setting_debug%" == "false" (
+                echo.    %%i>>%log_duplicates%
+                echo.    %%o>>%log_duplicates%
+              ) else (
+                echo.    %%i
+                echo.        size: %%j bytes
+                echo.        sha1:%%k
+                echo.    %%o
+                echo.        size: %%p bytes
+                echo.        sha1:%%q
+                echo.
+              )>>%log_duplicates%
+              echo.>>%log_duplicates%
+              echo.>>%log_duplicates%
             )
-            echo.
-            echo.
-
-            if not exist "%log_duplicates%" call :initiateLog
-
-            echo.Duplicates:>>%log_duplicates%
-            if "%setting_debug%" == "false" (
-              echo.    %%i>>%log_duplicates%
-              echo.    %%o>>%log_duplicates%
-            ) else (
-              echo.    %%i
-              echo.        size: %%j bytes
-              echo.        sha1:%%k
-              echo.    %%o
-              echo.        size: %%p bytes
-              echo.        sha1:%%q
-              echo.
-            )>>%log_duplicates%
-            echo.>>%log_duplicates%
-            echo.>>%log_duplicates%
           )
         )
       )
