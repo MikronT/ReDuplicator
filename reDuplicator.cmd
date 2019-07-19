@@ -31,9 +31,11 @@ set argument=%argument:"=%
 if exist "%argument%" ( set directory=%argument%
 ) else for /f "tokens=1,* delims=- " %%i in ("%*") do if "%%i" NEQ "" set key_%%i
 
+%directoryChecker%
 
-echo.%directory%>temp\directory
-for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
+
+
+
 
 if exist %temp% rd /s /q %temp%
 
@@ -256,6 +258,21 @@ echo.         github.com/MikronT
 echo.
 echo.
 echo.
+exit /b
+
+
+
+
+
+
+
+
+
+:directoryChecker
+if exist "%directory%" (
+  echo.%directory%>%temp%\directory
+  for /f "delims=" %%i in ("%temp%\directory") do if "%%~zi" == "5" set directory=%directory:\=%
+)
 exit /b
 
 
