@@ -12,8 +12,7 @@ set app_version=Pre-Alpha
 set setting_debug=false
 set setting_filter_include=
 set setting_filter_exclude=
-set setting_multithreading=false
-set setting_multithreading_threads=2
+set setting_multithreading=1
 
 set settings=settings.ini
 
@@ -118,10 +117,10 @@ goto :screen_main
 
 :screen_scan
 set counter_duplicates=0
-for /l %%i in (1, 1, %setting_multithreading_threads%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j
+for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j
 set counter_filesScanned=0
-for /l %%i in (1, 1, %setting_multithreading_threads%) do if exist %temp%\counter_filesScanned%%i for /f "delims=" %%j in (%temp%\counter_filesScanned%%i) do set /a counter_filesScanned+=%%j
-set /a counter_filesScanned/=%setting_multithreading_threads%
+for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_filesScanned%%i for /f "delims=" %%j in (%temp%\counter_filesScanned%%i) do set /a counter_filesScanned+=%%j
+set /a counter_filesScanned/=%setting_multithreading%
 
 %logo%
 if exist %temp%\messages type %temp%\messages
@@ -176,7 +175,7 @@ echo.>>%temp%\messages
 echo.^(i^) Initialization...>>%temp%\messages
 timeout /nobreak /t 3 >nul
 
-set /a multithreading_linesPerThread=%counter_dataLines%/%setting_multithreading_threads%+1
+set /a multithreading_linesPerThread=%counter_dataLines%/%setting_multithreading%+1
 set counter_thread=1
 set counter_dataLines_min=0
 set counter_dataLines=0
@@ -186,7 +185,7 @@ call :cycle_multithread_initializing
 
 
 echo.^(i^) Starting file comparing threads...>>%temp%\messages
-for /l %%i in (1, 1, %setting_multithreading_threads%) do start "" "%~dpnx0" --call=scan --thread=%%i
+for /l %%i in (1, 1, %setting_multithreading%) do start "" "%~dpnx0" --call=scan --thread=%%i
 
 
 
@@ -223,7 +222,7 @@ exit
 :cycle_multithread_initializing
 call :multithread_data_writing
 
-if "%counter_thread%" == "%setting_multithreading_threads%" exit /b
+if "%counter_thread%" == "%setting_multithreading%" exit /b
 
 set /a counter_thread+=1
 set /a counter_dataLines_min+=%multithreading_linesPerThread%
@@ -344,8 +343,8 @@ if "%setting_filter_exclude%" == "" ( echo.      ^(2^) Exclude: [nothing]
 
 echo.
 echo.    ^(3^) Debug: %setting_debug%
-echo.    ^(4^) Multithreading: %setting_multithreading%
-if "%setting_multithreading%" == "true" echo.      ^(5^) Threads: %setting_multithreading_threads%
+if "%setting_multithreading%" == "1" ( echo.    ^(4^) Multithreading: false
+) else echo.    ^(4^) Multithreading ^(threads^): %setting_multithreading%
 echo.
 echo.    ^(0^) Go back
 echo.
@@ -369,14 +368,12 @@ if "%command%" == "2" (
 )
 if "%command%" == "3" if "%setting_debug%" == "true" ( set setting_debug=false
 ) else set setting_debug=true
-if "%command%" == "4" if "%setting_multithreading%" == "true" ( set setting_multithreading=false
-) else set setting_multithreading=true
-if "%command%" == "5" (
-         if "%setting_multithreading_threads%" == "1" ( set setting_multithreading_threads=2
-  ) else if "%setting_multithreading_threads%" == "2" ( set setting_multithreading_threads=3
-  ) else if "%setting_multithreading_threads%" == "3" ( set setting_multithreading_threads=4
-  ) else if "%setting_multithreading_threads%" == "4" ( set setting_multithreading_threads=5
-  ) else if "%setting_multithreading_threads%" == "5"   set setting_multithreading_threads=1
+if "%command%" == "4" (
+         if "%setting_multithreading%" == "1" ( set setting_multithreading=2
+  ) else if "%setting_multithreading%" == "2" ( set setting_multithreading=3
+  ) else if "%setting_multithreading%" == "3" ( set setting_multithreading=4
+  ) else if "%setting_multithreading%" == "4" ( set setting_multithreading=5
+  ) else if "%setting_multithreading%" == "5"   set setting_multithreading=1
 )
 
 
@@ -386,8 +383,7 @@ echo.>>%settings%
 echo.debug=%setting_debug%>>%settings%
 echo.filter_include=%setting_filter_include%>>%settings%
 echo.filter_exclude=%setting_filter_exclude%>>%settings%
-echo.multithreading=%setting_multithreading%>>%settings%
-echo.multithreading_threads=%setting_multithreading_threads%i>>%settings%
+echo.multithreading_threads=%setting_multithreading%i>>%settings%
 
 endlocal
 goto :screen_settings
@@ -427,7 +423,7 @@ exit /b
 
 :settings_import
 if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
-for /f "delims=i" %%i in ("%setting_multithreading_threads%") do set setting_multithreading_threads=%%i
+for /f "delims=i" %%i in ("%setting_multithreading%") do set setting_multithreading=%%i
 exit /b
 
 
