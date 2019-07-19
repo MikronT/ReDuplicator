@@ -276,12 +276,42 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
               set /a counter_duplicates+=1
               echo.!counter_duplicates!>%temp%\counter_duplicates%1
 
-              if "%setting_maxSpeed%" == "false" (
-                echo.%%i>>%temp%\duplicates
-                echo.%%o>>%temp%\duplicates
-              )
+              echo.%%i>>%temp%\duplicates
+              echo.%%o>>%temp%\duplicates
 
-              call :scan_output
+              echo.^(i^) Duplicates:
+              if "%setting_debug%" == "false" (
+                echo.    %%i
+                echo.    %%o
+              ) else (
+                echo.    %%i
+                echo.        size: %%j bytes
+                echo.        sha1:%%k
+                echo.    %%o
+                echo.        size: %%p bytes
+                echo.        sha1:%%q
+                echo.
+              )
+              echo.
+              echo.
+
+              if not exist "%log_duplicates%" call :initiateLog
+
+              echo.Duplicates:>>%log_duplicates%
+              if "%setting_debug%" == "false" (
+                echo.    %%i>>%log_duplicates%
+                echo.    %%o>>%log_duplicates%
+              ) else (
+                echo.    %%i
+                echo.        size: %%j bytes
+                echo.        sha1:%%k
+                echo.    %%o
+                echo.        size: %%p bytes
+                echo.        sha1:%%q
+                echo.
+              )>>%log_duplicates%
+              echo.>>%log_duplicates%
+              echo.>>%log_duplicates%
             )
           )
         )
@@ -292,46 +322,6 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
 
 endlocal
 exit
-
-
-
-
-
-:scan_output
-echo.^(i^) Duplicates:
-if "%setting_debug%" == "false" (
-  echo.    %%i
-  echo.    %%o
-) else (
-  echo.    %%i
-  echo.        size: %%j bytes
-  echo.        sha1:%%k
-  echo.    %%o
-  echo.        size: %%p bytes
-  echo.        sha1:%%q
-  echo.
-)
-echo.
-echo.
-
-if not exist "%log_duplicates%" call :initiateLog
-
-echo.Duplicates:>>%log_duplicates%
-if "%setting_debug%" == "false" (
-  echo.    %%i>>%log_duplicates%
-  echo.    %%o>>%log_duplicates%
-) else (
-  echo.    %%i
-  echo.        size: %%j bytes
-  echo.        sha1:%%k
-  echo.    %%o
-  echo.        size: %%p bytes
-  echo.        sha1:%%q
-  echo.
-)>>%log_duplicates%
-echo.>>%log_duplicates%
-echo.>>%log_duplicates%
-exit /b
 
 
 
@@ -446,6 +436,8 @@ exit /b
 
 :settings_import
 if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
+
+rem if "%setting_maxSpeed%" == "true" set scan_maxSpeedAddition=for /f "delims=" %%z in ('type %temp%\duplicates ^| find /i /c "%%i"') do if "%%z" == "0"
 for /f "delims=i" %%i in ("%setting_multithreading%") do set setting_multithreading=%%i
 exit /b
 
