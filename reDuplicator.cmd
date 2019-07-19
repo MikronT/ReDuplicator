@@ -17,7 +17,6 @@ set settings=settings.ini
 
 set module_rehash=modules\rehash.exe -norecur -none
 
-set directoryChecker=call :directoryChecker
 set input=set /p command= ^^^> 
 set input_clear=set command=
 set logo=call :logo
@@ -35,11 +34,11 @@ set argument=%argument:"=%
 if exist "%argument%" ( set directory=%argument%
 ) else for /f "tokens=1,* delims=- " %%i in ("%*") do if "%%i" NEQ "" set key_%%i
 
-%directoryChecker%
-
-
+call :directoryChecker
 
 if "%key_call%" == "scan" call :scan
+
+if exist temp rd /s /q temp
 
 
 
@@ -54,8 +53,6 @@ if "%key_call%" == "scan" call :scan
 set session=%random%%random%
 set temp=temp\session-%session%
 if exist "%temp%" goto :cycle_sessionSet
-
-if exist temp rd /s /q temp
 
 if not exist logs md logs
 if not exist %temp% md %temp%
@@ -157,7 +154,7 @@ echo.>>%temp%\messages
 
 
 echo.^(i^) Starting files comparing...>>%temp%\messages
-set /a counter=0
+set counter=0
 
 for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting_filter_exclude%"') do (
   set /a counter+=1
