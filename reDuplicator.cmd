@@ -93,6 +93,7 @@ goto :screen_main
 
 
 :scan
+%logo%
 set counter=0
 
 :log_name_cycle
