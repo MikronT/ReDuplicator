@@ -194,10 +194,10 @@ exit /b
 
 
 
-:menu_settings
-call :logo
+:screen_settings
+%logo%
 set buffer=
-set command=
+%input_clear%
 
 %settings_import%
 
@@ -212,12 +212,12 @@ echo.    ^(0^) Go back
 echo.
 echo.
 echo.
-set /p command= ^> 
+%input%
 
 
 
 setlocal EnableDelayedExpansion
-if "%command%" == "0" ( set command= & exit /b )
+if "%command%" == "0" ( %input_clear% & exit /b )
 if "%command%" == "1" (
   set /p buffer=^(^>^) Enter Include filter ^> 
   if "!buffer!" == "" ( set setting_filter_include=
@@ -239,7 +239,7 @@ echo.filter_include=%setting_filter_include%>>%settings%
 echo.filter_exclude=%setting_filter_exclude%>>%settings%
 
 endlocal
-goto :menu_settings
+goto :screen_settings
 
 
 
