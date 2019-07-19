@@ -127,8 +127,8 @@ if exist %temp%\messages (
   type %temp%\messages
   echo.
 )
-echo.^(i^) Files scanned:   %counter_filesScanned%
-echo.^(i^) Duplicate pairs: %counter_duplicates%
+echo.^(i^) Files scanned: %counter_filesScanned%
+echo.^(i^) Duplicates:    %counter_duplicates%
 
 if exist "%temp%\session_completed" (
   echo.
