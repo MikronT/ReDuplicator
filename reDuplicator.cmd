@@ -12,7 +12,7 @@ set app_version=Pre-Alpha
 set setting_debug=false
 set setting_filter_include=
 set setting_filter_exclude=
-set setting_multithreading=1
+set setting_multithreading=2
 
 set settings=settings.ini
 
@@ -123,8 +123,10 @@ for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_filesS
 set /a counter_filesScanned/=%setting_multithreading%
 
 %logo%
-if exist %temp%\messages type %temp%\messages
-echo.
+if exist %temp%\messages (
+  type %temp%\messages
+  echo.
+)
 echo.^(i^) Files scanned:   %counter_filesScanned%
 echo.^(i^) Duplicate pairs: %counter_duplicates%
 
@@ -186,12 +188,18 @@ call :cycle_multithread_initializing
 
 echo.^(i^) Starting file comparing threads...>>%temp%\messages
 for /l %%i in (1, 1, %setting_multithreading%) do start "" "%~dpnx0" --call=scan --thread=%%i
+timeout /nobreak /t 2 >nul
 
 
 
 :cycle_scanWait
+set counter_scanWait=0
 timeout /nobreak /t 1 >nul
-for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq %app_name%   Session: %session%   Thread*" ^| find /i /c "cmd.exe"') do if "%%i" == "0" goto :cycle_scanWait_outPoint
+
+for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq %app_name%   Session: %session%   Thread*" ^| find /i /c "cmd.exe"') do set /a counter_scanWait+=%%i
+for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq Select %app_name%   Session: %session%   Thread*" ^| find /i /c "cmd.exe"') do set /a counter_scanWait+=%%i
+
+if "%counter_scanWait%" == "0" goto :cycle_scanWait_outPoint
 goto :cycle_scanWait
 :cycle_scanWait_outPoint
 
@@ -271,42 +279,12 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
               set /a counter_duplicates+=1
               echo.!counter_duplicates!>%temp%\counter_duplicates%1
 
-              echo.%%i>>%temp%\duplicates
-              echo.%%o>>%temp%\duplicates
-
-              echo.^(i^) Duplicates:
-              if "%setting_debug%" == "false" (
-                echo.    %%i
-                echo.    %%o
-              ) else (
-                echo.    %%i
-                echo.        size: %%j bytes
-                echo.        sha1:%%k
-                echo.    %%o
-                echo.        size: %%p bytes
-                echo.        sha1:%%q
-                echo.
+              if "%setting_maxSpeed%" == "false" (
+                echo.%%i>>%temp%\duplicates
+                echo.%%o>>%temp%\duplicates
               )
-              echo.
-              echo.
 
-              if not exist "%log_duplicates%" call :initiateLog
-
-              echo.Duplicates:>>%log_duplicates%
-              if "%setting_debug%" == "false" (
-                echo.    %%i>>%log_duplicates%
-                echo.    %%o>>%log_duplicates%
-              ) else (
-                echo.    %%i
-                echo.        size: %%j bytes
-                echo.        sha1:%%k
-                echo.    %%o
-                echo.        size: %%p bytes
-                echo.        sha1:%%q
-                echo.
-              )>>%log_duplicates%
-              echo.>>%log_duplicates%
-              echo.>>%log_duplicates%
+              call :scan_output
             )
           )
         )
@@ -318,6 +296,46 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
 endlocal
 exit
 
+
+
+
+
+
+:scan_output
+echo.^(i^) Duplicates:
+if "%setting_debug%" == "false" (
+  echo.    %%i
+  echo.    %%o
+) else (
+  echo.    %%i
+  echo.        size: %%j bytes
+  echo.        sha1:%%k
+  echo.    %%o
+  echo.        size: %%p bytes
+  echo.        sha1:%%q
+  echo.
+)
+echo.
+echo.
+
+if not exist "%log_duplicates%" call :initiateLog
+
+echo.Duplicates:>>%log_duplicates%
+if "%setting_debug%" == "false" (
+  echo.    %%i>>%log_duplicates%
+  echo.    %%o>>%log_duplicates%
+) else (
+  echo.    %%i
+  echo.        size: %%j bytes
+  echo.        sha1:%%k
+  echo.    %%o
+  echo.        size: %%p bytes
+  echo.        sha1:%%q
+  echo.
+)>>%log_duplicates%
+echo.>>%log_duplicates%
+echo.>>%log_duplicates%
+exit /b
 
 
 
@@ -373,7 +391,9 @@ if "%command%" == "3" (
   ) else if "%setting_multithreading%" == "2" ( set setting_multithreading=3
   ) else if "%setting_multithreading%" == "3" ( set setting_multithreading=4
   ) else if "%setting_multithreading%" == "4" ( set setting_multithreading=5
-  ) else if "%setting_multithreading%" == "5"   set setting_multithreading=1
+  ) else if "%setting_multithreading%" == "5" ( set setting_multithreading=6
+  ) else if "%setting_multithreading%" == "6" ( set setting_multithreading=7
+  ) else if "%setting_multithreading%" == "7"   set setting_multithreading=1
 )
 if "%command%" == "4" if "%setting_debug%" == "true" ( set setting_debug=false
 ) else set setting_debug=true
