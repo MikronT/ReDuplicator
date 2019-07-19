@@ -55,9 +55,7 @@ set session=%random%%random%
 set temp=temp\session-%session%
 if exist "%temp%" goto :cycle_sessionSet
 
-
-
-if exist %temp% rd /s /q %temp%
+if exist temp rd /s /q temp
 
 if not exist logs md logs
 if not exist %temp% md %temp%
