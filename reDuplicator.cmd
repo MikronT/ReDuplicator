@@ -112,6 +112,9 @@ goto :screen_main
 
 if exist %temp%\messages type %temp%\messages
 
+if exist %temp%\counter_filesScanned for /f "delims=" %%i in (%temp%\counter_filesScanned) do echo.^(i^) Files scanned:    %%i
+if exist %temp%\counter_duplicates   for /f "delims=" %%i in (%temp%\counter_duplicates) do   echo.^(i^) Duplicates found: %%i
+
 if exist "%temp%\session_completed" (
   echo.
   echo.
@@ -135,11 +138,11 @@ goto :screen_scan
 
 :scan
 %logo%
-set counter=0
+set counter_log=0
 
 :cycle_log_name
-set /a counter+=1
-set log_duplicates=logs\reDuplicator_%currentDate%_%counter%.txt
+set /a counter_log+=1
+set log_duplicates=logs\reDuplicator_%currentDate%_%counter_log%.txt
 if exist "%log_duplicates%" goto :cycle_log_name
 
 
@@ -154,15 +157,20 @@ echo.>>%temp%\messages
 
 
 echo.^(i^) Starting files comparing...>>%temp%\messages
-set counter=0
+set counter_filesScanned=0
+set counter_duplicates=0
 
 for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting_filter_exclude%"') do (
-  set /a counter+=1
+  set /a counter_filesScanned+=1
+  echo.%counter_filesScanned%>%temp%\counter_filesScanned
   for /f "tokens=1,2,* delims=;" %%o in ('type %temp%\data ^| find /i /v "%setting_filter_exclude%"') do (
     if "%%i" NEQ "%%o" if "%%j" == "%%p" (
       for /f "skip=1 tokens=2* delims=:" %%k in ('%module_rehash% -sha1 "%%i"') do (
         for /f "skip=1 tokens=2* delims=:" %%q in ('%module_rehash% -sha1 "%%o"') do (
           if "%%k" == "%%q" (
+            set /a counter_duplicates+=1
+            echo.%counter_duplicates%>%temp%\counter_duplicates
+
             echo.^(i^) Duplicates:
             if "%setting_debug%" == "false" (
               echo.    %%i
@@ -209,8 +217,6 @@ echo.^(i^) Scan completed^!
 echo.>%temp%\session_completed
 
 echo.^(i^) Completed^!>>%temp%\messages
-echo.>>%temp%\messages
-echo.^(i^) Files scanned: %counter%>>%temp%\messages
 echo.>>%temp%\messages
 
 if exist %log_duplicates% (
