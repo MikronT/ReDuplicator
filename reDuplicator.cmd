@@ -43,6 +43,13 @@ if "%key_call%" == "scan" call :scan
 
 
 
+
+
+
+
+
+
+:screen_main
 :cycle_sessionSet
 set session=%random%%random%
 set temp=temp\session-%session%
@@ -57,13 +64,6 @@ if not exist %temp% md %temp%
 
 
 
-
-
-
-
-
-
-:screen_main
 set currentDate=%date%
 for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
 for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%j.%%i
@@ -115,21 +115,19 @@ goto :screen_main
 :screen_scan
 %logo%
 
-type %temp%\messages
+if exist %temp%\messages type %temp%\messages
 
-if exist "%temp%\completed" (
+if exist "%temp%\session_completed" (
   echo.
   echo.
   echo.
   echo.^(i^) Press Enter to go to the main menu
   pause>nul
-  echo.>%temp%\closed
+  echo.>%temp%\session_closed
   exit /b
 )
 
-
-
-timeout /t 3 >nul
+timeout /t 1 >nul
 goto :screen_scan
 
 
@@ -156,11 +154,12 @@ echo.^(i^) Getting directory tree...>>%temp%\messages
 for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%setting_filter_include%*"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp%\data
 
 for /f "delims=" %%i in ("%temp%\data") do echo.^(i^) Directory tree data size: %%~zi bytes>>%temp%\messages
+echo.>>%temp%\messages
 
 
 
 echo.^(i^) Starting files comparing...>>%temp%\messages
-set counter=0
+set /a counter=0
 
 for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting_filter_exclude%"') do (
   set /a counter+=1
@@ -211,20 +210,23 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
 
 
 
-echo.^(i^) Completed^!
+echo.^(i^) Scan completed^!
+echo.>%temp%\session_completed
+
 echo.^(i^) Completed^!>>%temp%\messages
-echo.>%temp%\completed
-
-if exist %log_duplicates% ( echo.^(i^) All info saved into the %log_duplicates% file>>%temp%\messages
-) else echo.^(^!^) Any duplicates not found>>%temp%\messages
-
+echo.>>%temp%\messages
 echo.^(i^) Files scanned: %counter%>>%temp%\messages
-for /f "delims=" %%i in ("%log_duplicates%") do echo.^(i^) Log file size: %%~zi bytes>>%temp%\messages
+echo.>>%temp%\messages
+
+if exist %log_duplicates% (
+  echo.^(i^) All info saved into the %log_duplicates% file>>%temp%\messages
+  for /f "delims=" %%i in ("%log_duplicates%") do echo.^(i^) Log file size: %%~zi bytes>>%temp%\messages
+) else echo.^(^!^) Any duplicates not found>>%temp%\messages
 
 
 
 :cycle_closeWait
-if exist "%temp%\closed" exit
+if exist "%temp%\session_closed" exit
 goto :cycle_closeWait
 
 
