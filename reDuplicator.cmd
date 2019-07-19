@@ -82,13 +82,13 @@ echo.    ^(2^) Settings
 echo.
 echo.
 echo.
-set /p command= ^> 
+%input%
 
 
 
 if "%command%" == "1" call :scan
-if "%command%" == "2" call :menu_settings
 goto :menu_main
+if "%command%" == "2" call :screen_settings
 goto :screen_main
 
 
