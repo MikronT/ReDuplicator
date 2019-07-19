@@ -20,6 +20,11 @@ set temp=temp\%random%%random%%random%
 if exist "%temp%" goto :cycle_setTemp
 
 set module_rehash=modules\rehash.exe -norecur -none
+
+set directoryChecker=call :directoryChecker
+set input=set /p command= ^^^> 
+set input_clear=set command=
+set logo=call :logo
 set settings_import=if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
 
 
