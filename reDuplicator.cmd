@@ -128,7 +128,6 @@ if exist %temp%\messages type %temp%\messages
 echo.
 echo.^(i^) Files scanned:   %counter_filesScanned%
 echo.^(i^) Duplicate pairs: %counter_duplicates%
-echo.
 
 if exist "%temp%\session_completed" (
   echo.
@@ -139,7 +138,7 @@ if exist "%temp%\session_completed" (
   exit /b
 )
 
-timeout /t 1 >nul
+timeout /t 3 >nul
 goto :screen_scan
 
 
@@ -193,7 +192,7 @@ for /l %%i in (1, 1, %setting_multithreading_threads%) do start "" "%~dpnx0" --c
 
 :cycle_scanWait
 timeout /nobreak /t 1 >nul
-for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq %app_name%  Session: %session%  Thread*" ^| find /i /c "cmd.exe"') do if "%%i" == "0" goto :cycle_scanWait_outPoint
+for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq %app_name%   Session: %session%   Thread*" ^| find /i /c "cmd.exe"') do if "%%i" == "0" goto :cycle_scanWait_outPoint
 goto :cycle_scanWait
 :cycle_scanWait_outPoint
 
