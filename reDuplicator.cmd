@@ -39,7 +39,11 @@ if exist "%argument%" ( set directory=%argument%
   if "%%j" NEQ "" set key_%%j
 )
 
-call :directoryChecker
+if exist "%directory%" (
+  if not exist temp md temp
+  echo.%directory%>temp\directory
+  for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
+)
 
 if "%key_call%" NEQ "" call :%key_call% %key_thread%
 
@@ -98,7 +102,7 @@ echo.
 
 
 if "%command%" == "1" (
-  start /b "" "%~dpnx0" --call=scan_preparing
+  start /b "" "%~dpnx0" --call=scan_controller
   call :screen_scan
 )
 if "%command%" == "2" call :screen_settings
@@ -146,7 +150,7 @@ goto :screen_scan
 
 
 
-:scan_preparing
+:scan_controller
 echo.>%temp%\duplicates
 set counter_log=0
 
@@ -189,7 +193,7 @@ for /l %%i in (1, 1, %setting_multithreading_threads%) do start "" "%~dpnx0" --c
 
 :cycle_scanWait
 timeout /nobreak /t 1 >nul
-for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq %app_name% Thread*" ^| find /i /c "cmd.exe"') do if "%%i" == "0" goto :cycle_scanWait_outPoint
+for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq %app_name%  Session: %session%  Thread*" ^| find /i /c "cmd.exe"') do if "%%i" == "0" goto :cycle_scanWait_outPoint
 goto :cycle_scanWait
 :cycle_scanWait_outPoint
 
@@ -217,9 +221,41 @@ exit
 
 
 
+:cycle_multithread_initializing
+call :multithread_data_writing
+
+if "%counter_thread%" == "%setting_multithreading_threads%" exit /b
+
+set /a counter_thread+=1
+set /a counter_dataLines_min+=%multithreading_linesPerThread%
+set /a counter_dataLines_max+=%multithreading_linesPerThread%
+goto :cycle_multithread_initializing
+
+
+
+
+
+:multithread_data_writing
+setlocal EnableDelayedExpansion
+for /f "delims=" %%i in (%temp%\data) do (
+  set /a counter_dataLines+=1
+  if !counter_dataLines! GTR %counter_dataLines_min% echo.%%i>>%temp%\data_thread%counter_thread%
+  if "!counter_dataLines!" == "%counter_dataLines_max%" exit /b
+)
+endlocal
+exit /b
+
+
+
+
+
+
+
+
+
 :scan
 %logo%
-title %app_name% Thread %1
+title %app_name%   Session: %session%   Thread %1
 
 setlocal EnableDelayedExpansion
 set counter_filesScanned=0
@@ -379,22 +415,6 @@ exit /b
 
 
 
-:directoryChecker
-if exist "%directory%" (
-  if not exist temp md temp
-  echo.%directory%>temp\directory
-  for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
-)
-exit /b
-
-
-
-
-
-
-
-
-
 :initiateLog
 echo.ReDuplicator Log File ^| %currentDate%>>%log_duplicates%
 echo.>>%log_duplicates%
@@ -409,40 +429,4 @@ if "%setting_debug%" == "true" (
   echo.>>%log_duplicates%
 )
 echo.>>%log_duplicates%
-exit /b
-
-
-
-
-
-
-
-
-
-:cycle_multithread_initializing
-call :multithread_data_writing
-
-if "%counter_thread%" == "%setting_multithreading_threads%" exit /b
-
-set /a counter_thread+=1
-set /a counter_dataLines_min+=%multithreading_linesPerThread%
-set /a counter_dataLines_max+=%multithreading_linesPerThread%
-goto :cycle_multithread_initializing
-
-
-
-
-
-
-
-
-
-:multithread_data_writing
-setlocal EnableDelayedExpansion
-for /f "delims=" %%i in (%temp%\data) do (
-  set /a counter_dataLines+=1
-  if !counter_dataLines! GTR %counter_dataLines_min% echo.%%i>>%temp%\data_thread%counter_thread%
-  if "!counter_dataLines!" == "%counter_dataLines_max%" exit /b
-)
-endlocal
 exit /b
