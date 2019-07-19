@@ -92,7 +92,6 @@ echo.
 
 
 if "%command%" == "1" call :scan
-goto :menu_main
 if "%command%" == "2" call :screen_settings
 goto :screen_main
 
