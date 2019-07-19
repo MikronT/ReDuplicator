@@ -12,6 +12,8 @@ set app_version=Pre-Alpha
 set setting_debug=false
 set setting_filter_include=
 set setting_filter_exclude=
+set setting_multithreading=false
+set setting_multithreading_threads=2
 
 set settings=settings.ini
 
@@ -297,9 +299,12 @@ if "%command%" == "3" if "%setting_debug%" == "true" ( set setting_debug=false
 
 
 echo.# ReDuplicator Settings #>%settings%
+echo.
 echo.debug=%setting_debug%>>%settings%
 echo.filter_include=%setting_filter_include%>>%settings%
 echo.filter_exclude=%setting_filter_exclude%>>%settings%
+echo.multithreading=%setting_multithreading%>>%settings%
+echo.multithreading_threads=%setting_multithreading_threads%>>%settings%
 
 endlocal
 goto :screen_settings
