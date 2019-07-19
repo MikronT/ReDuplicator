@@ -16,7 +16,7 @@ set setting_filter_exclude=
 set settings=settings.ini
 
 :cycle_setTemp
-set temp=temp\%random%%random%%random%
+set temp=temp\session-%random%%random%
 if exist "%temp%" goto :cycle_setTemp
 
 set module_rehash=modules\rehash.exe -norecur -none
@@ -49,8 +49,8 @@ if "%key_call%" == "scan" call :scan
 
 if exist %temp% rd /s /q %temp%
 
-if not exist logs md logs>nul 2>nul
-md %temp%>nul 2>nul
+if not exist logs md logs
+if not exist %temp% md %temp%
 
 
 
@@ -94,7 +94,7 @@ echo.
 
 
 if "%command%" == "1" (
-  start "%~dpnx0" --call=scan
+  start "" "%~dpnx0" --call=scan
   call :screen_scan
 )
 if "%command%" == "2" call :screen_settings
@@ -316,6 +316,7 @@ exit /b
 
 :directoryChecker
 if exist "%directory%" (
+  if not exist %temp% md %temp%
   echo.%directory%>%temp%\directory
   for /f "delims=" %%i in ("%temp%\directory") do if "%%~zi" == "5" set directory=%directory:\=%
 )
