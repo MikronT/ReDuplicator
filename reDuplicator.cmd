@@ -25,10 +25,7 @@ set settings_import=if exist "%settings%" for /f "eol=# delims=" %%i in (%settin
 
 
 
-if exist temp rd /s /q temp
 
-if not exist logs md logs>nul 2>nul
-md temp>nul 2>nul
 
 
 
@@ -37,6 +34,11 @@ md temp>nul 2>nul
 
 echo.%directory%>temp\directory
 for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
+
+if exist %temp% rd /s /q %temp%
+
+if not exist logs md logs>nul 2>nul
+md %temp%>nul 2>nul
 
 
 
