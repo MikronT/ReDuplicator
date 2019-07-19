@@ -6,7 +6,6 @@ cd "%~dp0"
 
 
 
-set temp_data=temp\data
 set app_name=ReDuplicator
 set app_version=Pre-Alpha
 
@@ -15,6 +14,10 @@ set setting_filter_include=
 set setting_filter_exclude=
 
 set settings=settings.ini
+
+:cycle_setTemp
+set temp=temp\%random%%random%%random%
+if exist "%temp%" goto :cycle_setTemp
 
 set module_rehash=modules\rehash.exe -norecur -none
 set settings_import=if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
@@ -109,18 +112,18 @@ if exist "%log_duplicates%" goto :cycle_log_name
 
 echo.^(i^) Getting directory tree...
 
-for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%setting_filter_include%*"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp_data%
+for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%setting_filter_include%*"') do for /f "delims=" %%j in ("%%i") do echo.%%i;%%~zj>>%temp%\data
 
-for /f "delims=" %%i in ("temp\data") do echo.^(i^) Directory tree data size: %%~zi bytes
+for /f "delims=" %%i in ("%temp%\data") do echo.^(i^) Directory tree data size: %%~zi bytes>>%temp%\messages
 
 
 
 echo.^(i^) Starting files comparing...
 set counter=0
 
-for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%setting_filter_exclude%"') do (
+for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting_filter_exclude%"') do (
   set /a counter+=1
-  for /f "tokens=1,2,* delims=;" %%o in ('type %temp_data% ^| find /i /v "%setting_filter_exclude%"') do (
+  for /f "tokens=1,2,* delims=;" %%o in ('type %temp%\data ^| find /i /v "%setting_filter_exclude%"') do (
     if "%%i" NEQ "%%o" if "%%j" == "%%p" (
       for /f "skip=1 tokens=2* delims=:" %%k in ('%module_rehash% -sha1 "%%i"') do (
         for /f "skip=1 tokens=2* delims=:" %%q in ('%module_rehash% -sha1 "%%o"') do (
