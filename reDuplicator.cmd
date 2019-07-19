@@ -29,13 +29,13 @@ set settings_import=if exist "%settings%" for /f "eol=# delims=" %%i in (%settin
 
 
 
+%settings_import%
 
 
 
 set argument=%1
 set argument=%argument:"=%
 
-%settings_import%
 if exist "%argument%" ( set directory=%argument%
 ) else for /f "tokens=1,* delims=- " %%i in ("%*") do if "%%i" NEQ "" set key_%%i
 
