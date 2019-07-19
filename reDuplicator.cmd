@@ -32,9 +32,6 @@ md temp>nul 2>nul
 
 %settings_import%
 
-set currentDate=%date%
-for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
-for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%j.%%i
 
 echo.%directory%>temp\directory
 for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
@@ -50,6 +47,12 @@ for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%d
 :menu_main
 call :logo
 set command=
+set currentDate=%date%
+for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
+for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%j.%%i
+
+
+
 
 echo.^(i^) Program directory: "%cd%"
 if exist "%directory%" ( echo.^(i^) Work directory:    "%directory%"
