@@ -15,9 +15,10 @@ set setting_filter_exclude=
 
 set settings=settings.ini
 
-:cycle_setTemp
-set temp=temp\session-%random%%random%
-if exist "%temp%" goto :cycle_setTemp
+:cycle_sessionSet
+set session=%random%%random%
+set temp=temp\session-%session%
+if exist "%temp%" goto :cycle_sessionSet
 
 set module_rehash=modules\rehash.exe -norecur -none
 
@@ -70,8 +71,8 @@ for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%
 %logo%
 %input_clear%
 
+echo.^(i^) Session:           "%session%"
 echo.^(i^) Program directory: "%cd%"
-echo.^(i^) Temp directory:    "%temp%"
 if exist "%directory%" ( echo.^(i^) Work directory:    "%directory%"
 ) else (
   color 0c
