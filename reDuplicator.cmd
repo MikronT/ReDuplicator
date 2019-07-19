@@ -4,14 +4,8 @@ chcp 65001>nul
 %~d0
 cd "%~dp0"
 
-set parameter=%1
-set parameter=%parameter:"=%
-
-if exist "%parameter%" set directory=%parameter%
 
 
-
-set module_rehash=modules\rehash.exe -norecur -none
 set temp_data=temp\data
 set app_name=ReDuplicator
 set app_version=Pre-Alpha
@@ -21,6 +15,8 @@ set setting_filter_include=
 set setting_filter_exclude=
 
 set settings=settings.ini
+
+set module_rehash=modules\rehash.exe -norecur -none
 set settings_import=if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
 
 
@@ -28,8 +24,12 @@ set settings_import=if exist "%settings%" for /f "eol=# delims=" %%i in (%settin
 
 
 
+set argument=%1
+set argument=%argument:"=%
 
 %settings_import%
+if exist "%argument%" ( set directory=%argument%
+) else for /f "tokens=1,* delims=- " %%i in ("%*") do if "%%i" NEQ "" set key_%%i
 
 
 echo.%directory%>temp\directory
@@ -48,8 +48,6 @@ md %temp%>nul 2>nul
 
 
 
-call :logo
-set command=
 :screen_main
 set currentDate=%date%
 for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
@@ -57,6 +55,8 @@ for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%
 
 
 
+%logo%
+%input_clear%
 
 echo.^(i^) Program directory: "%cd%"
 echo.^(i^) Temp directory:    "%temp%"
