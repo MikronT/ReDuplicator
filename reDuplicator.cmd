@@ -99,22 +99,6 @@ set counter=0
 :cycle_log_name
 set /a counter+=1
 set log_duplicates=logs\reDuplicator_%currentDate%_%counter%.txt
-
-
-
-echo.ReDuplicator Log File ^| %currentDate%>>%log_duplicates%
-echo.>>%log_duplicates%
-echo.>>%log_duplicates%
-if "%setting_debug%" == "true" (
-  echo.Variables:>>%log_duplicates%
-  echo.  debug=%setting_debug%>>%log_duplicates%
-  echo.  filter_include=%setting_filter_include%>>%log_duplicates%
-  echo.  filter_exclude=%setting_filter_exclude%>>%log_duplicates%
-  echo.  log_duplicates=%log_duplicates%>>%log_duplicates%
-  echo.>>%log_duplicates%
-  echo.>>%log_duplicates%
-)
-echo.>>%log_duplicates%
 if exist "%log_duplicates%" goto :cycle_log_name
 
 
@@ -152,6 +136,8 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp_data% ^| find /i /v "%setting
             )
             echo.
             echo.
+
+            if not exist "%log_duplicates%" call :initiateLog
 
             echo.Duplicates:>>%log_duplicates%
             if "%setting_debug%" == "false" (
@@ -264,4 +250,28 @@ echo.         github.com/MikronT
 echo.
 echo.
 echo.
+exit /b
+
+
+
+
+
+
+
+
+
+:initiateLog
+echo.ReDuplicator Log File ^| %currentDate%>>%log_duplicates%
+echo.>>%log_duplicates%
+echo.>>%log_duplicates%
+if "%setting_debug%" == "true" (
+  echo.Variables:>>%log_duplicates%
+  echo.  debug=%setting_debug%>>%log_duplicates%
+  echo.  filter_include=%setting_filter_include%>>%log_duplicates%
+  echo.  filter_exclude=%setting_filter_exclude%>>%log_duplicates%
+  echo.  log_duplicates=%log_duplicates%>>%log_duplicates%
+  echo.>>%log_duplicates%
+  echo.>>%log_duplicates%
+)
+echo.>>%log_duplicates%
 exit /b
