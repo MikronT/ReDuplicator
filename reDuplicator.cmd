@@ -44,9 +44,9 @@ for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%d
 
 
 
-:menu_main
 call :logo
 set command=
+:screen_main
 set currentDate=%date%
 for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
 for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%j.%%i
@@ -76,6 +76,7 @@ set /p command= ^>
 if "%command%" == "1" call :scan
 if "%command%" == "2" call :menu_settings
 goto :menu_main
+goto :screen_main
 
 
 
