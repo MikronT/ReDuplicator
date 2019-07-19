@@ -12,7 +12,6 @@ set app_version=Pre-Alpha
 set setting_debug=false
 set setting_filter_include=
 set setting_filter_exclude=
-set setting_maxSpeed=false
 set setting_multithreading=2
 
 set settings=settings.ini
@@ -350,8 +349,7 @@ echo.
 if "%setting_multithreading%" == "1" ( echo.    ^(3^) Multithreading: false
 ) else echo.    ^(3^) Multithreading ^(threads^): %setting_multithreading%
 
-echo.    ^(4^) Max speed mode: %setting_maxSpeed%
-echo.    ^(5^) Debug: %setting_debug%
+echo.    ^(4^) Debug: %setting_debug%
 echo.
 echo.    ^(0^) Go back
 echo.
@@ -382,9 +380,7 @@ if "%command%" == "3" (
   ) else if "%setting_multithreading%" == "6" ( set setting_multithreading=7
   ) else if "%setting_multithreading%" == "7"   set setting_multithreading=1
 )
-if "%command%" == "4" if "%setting_maxSpeed%" == "true" ( set setting_maxSpeed=false
-) else set setting_maxSpeed=true
-if "%command%" == "5" if "%setting_debug%" == "true" ( set setting_debug=false
+if "%command%" == "4" if "%setting_debug%" == "true" ( set setting_debug=false
 ) else set setting_debug=true
 
 
@@ -394,7 +390,6 @@ echo.>>%settings%
 echo.debug=%setting_debug%>>%settings%
 echo.filter_include=%setting_filter_include%>>%settings%
 echo.filter_exclude=%setting_filter_exclude%>>%settings%
-echo.maxSpeed=%setting_maxSpeed%>>%settings%
 echo.multithreading=%setting_multithreading%i>>%settings%
 
 endlocal
@@ -436,7 +431,6 @@ exit /b
 :settings_import
 if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
 
-rem if "%setting_maxSpeed%" == "true" set scan_maxSpeedAddition=for /f "delims=" %%z in ('type %temp%\duplicates ^| find /i /c "%%i"') do if "%%z" == "0"
 for /f "delims=i" %%i in ("%setting_multithreading%") do set setting_multithreading=%%i
 exit /b
 
