@@ -12,7 +12,7 @@ set app_version=Pre-Alpha
 set setting_debug=false
 set setting_filter_include=
 set setting_filter_exclude=
-set setting_multithreading=2
+set setting_multithreading=3
 
 set settings=settings.ini
 
