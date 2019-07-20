@@ -193,7 +193,7 @@ echo.^(i^) Starting file comparing threads...>>%temp%\messages
 echo.>%temp%\duplicates
 
 for /l %%i in (1, 1, %setting_multithreading%) do start "" "%~dpnx0" --call=scan --thread=%%i
-timeout /nobreak /t 2 >nul
+timeout /nobreak /t %setting_multithreading% >nul
 
 
 
