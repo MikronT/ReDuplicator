@@ -103,6 +103,7 @@ echo.
 
 if "%command%" == "1" (
   start /b "" "%~dpnx0" --call=scan_controller
+  start /b "" "%~dpnx0" --call=log_controller
   call :screen_scan
 )
 if "%command%" == "2" call :screen_settings
@@ -341,6 +342,17 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
 )
 
 endlocal
+exit
+
+
+
+
+
+
+
+
+
+:log_controller
 exit
 
 
