@@ -44,7 +44,10 @@ if exist "%directory%" (
   for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
 )
 
-if "%key_call%" NEQ "" call :%key_call% %key_thread%
+if "%key_call%" NEQ "" (
+  %logo% %app_name%   Session: %session%   Thread %key_thread%
+  call :%key_call% %key_thread%
+)
 
 
 
@@ -257,9 +260,6 @@ exit /b
 
 
 :scan
-%logo%
-title %app_name%   Session: %session%   Thread %1
-
 setlocal EnableDelayedExpansion
 set counter_filesScanned=0
 set counter_duplicates=0
@@ -411,8 +411,8 @@ goto :screen_settings
 
 
 :logo
-if "%*" == "" ( title [MikronT] %app_name% %app_version% ^| %directory%
-) else title [MikronT] %app_name% %app_version% ^| %directory% ^| %*
+if "%*" == "" ( title [MikronT] %app_name% %app_version% ^| Session: %session% ^| %directory%
+) else title %*
 color 0b
 cls
 echo.
