@@ -46,8 +46,6 @@ if exist "%directory%" (
 
 if "%key_call%" NEQ "" call :%key_call% %key_thread%
 
-if exist temp rd /s /q temp
-
 
 
 
@@ -105,6 +103,10 @@ if "%command%" == "1" (
   call :screen_scan
 )
 if "%command%" == "2" call :screen_settings
+
+
+
+if exist %temp% rd /s /q %temp%
 goto :screen_main
 
 
