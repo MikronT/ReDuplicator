@@ -290,6 +290,7 @@ if not exist %temp%\data_thread%1 exit
 setlocal EnableDelayedExpansion
 set counter_filesScanned=0
 set counter_duplicates=0
+set counter_duplicates_size=0
 
 for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting_filter_exclude%"') do (
   set /a counter_filesScanned+=1
@@ -300,11 +301,14 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
         for /f "skip=1 tokens=2* delims=:" %%q in ('%module_rehash% -sha1 "%%o"') do (
           if "%%k" == "%%q" (
             for /f "delims=" %%z in ('type %temp%\duplicates ^| find /i /c "%%i"') do if "%%z" == "0" (
+              echo.%%i>>%temp%\duplicates
+              echo.%%o>>%temp%\duplicates
+
               set /a counter_duplicates+=1
               echo.!counter_duplicates!>%temp%\counter_duplicates%1
 
-              echo.%%i>>%temp%\duplicates
-              echo.%%o>>%temp%\duplicates
+              set /a counter_duplicates_size+=%%j
+              echo.!counter_duplicates_size!>%temp%\counter_duplicates_size%1
 
               echo.^(i^) Duplicates:
               if "%setting_debug%" == "false" (
