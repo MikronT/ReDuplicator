@@ -131,18 +131,18 @@ goto :screen_main
 
 :screen_scan
 set counter_filesScanned=0
-for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_filesScanned%%i for /f "delims=" %%j in (%temp%\counter_filesScanned%%i) do set /a counter_filesScanned+=%%j
+(for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_filesScanned%%i for /f "delims=" %%j in (%temp%\counter_filesScanned%%i) do set /a counter_filesScanned+=%%j)>nul 2>nul
 set /a counter_filesScanned/=%setting_multithreading%
 
 set counter_duplicates=0
-for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j
+(for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j)>nul 2>nul
 
 if "%counter_duplicates%" NEQ "0" (
   call :math_set counter_duplicates_size 0
-  for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do call :math_add counter_duplicates_size %%j
+  (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do call :math_add counter_duplicates_size %%j)>nul 2>nul
 
   start /wait /b "" "%~dpnx0" --call=math_format --args=counter_duplicates_size
-  if exist %temp%\math_number_format_counter_duplicates_size for /f "delims=" %%i in (%temp%\math_number_format_counter_duplicates_size) do set counter_duplicates_size=%%i
+  (if exist %temp%\math_number_format_counter_duplicates_size for /f "delims=" %%i in (%temp%\math_number_format_counter_duplicates_size) do set counter_duplicates_size=%%i)>nul 2>nul
 )
 
 
