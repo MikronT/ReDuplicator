@@ -310,8 +310,8 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
 
               echo.^(i^) Duplicates:
               if "%setting_debug%" == "false" (
-                echo.    %%i
-                echo.    %%o
+                echo.    %%i  :^|:  %%j bytes
+                echo.    %%o  :^|:  %%p bytes
               ) else (
                 echo.    %%i
                 echo.        size: %%j bytes
@@ -324,21 +324,23 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
               echo.
               echo.
 
-              echo.Duplicates:>>%temp%\log_thread%1
-              if "%setting_debug%" == "false" (
-                echo.    %%i>>%temp%\log_thread%1
-                echo.    %%o>>%temp%\log_thread%1
-              ) else (
-                echo.    %%i
-                echo.        size: %%j bytes
-                echo.        sha1:%%k
-                echo.    %%o
-                echo.        size: %%p bytes
-                echo.        sha1:%%q
+              (
+                echo.Duplicates:
+                if "%setting_debug%" == "false" (
+                  echo.    %%i  :^|:  %%j bytes
+                  echo.    %%o  :^|:  %%p bytes
+                ) else (
+                  echo.    %%i
+                  echo.        size: %%j bytes
+                  echo.        sha1:%%k
+                  echo.    %%o
+                  echo.        size: %%p bytes
+                  echo.        sha1:%%q
+                  echo.
+                )
+                echo.
                 echo.
               )>>%temp%\log_thread%1
-              echo.>>%temp%\log_thread%1
-              echo.>>%temp%\log_thread%1
             )
           )
         )
@@ -359,23 +361,29 @@ exit
 
 
 :log_controller
-for /f "delims=" %%i in ('dir /a:-d /b "%temp%\log_thread*" ^| find /i /c "log_thread"') do if "%%i" NEQ "0" (
-  echo.ReDuplicator Log File ^| %currentDate%>>%log%
-  echo.>>%log%
-  echo.>>%log%
-  if "%setting_debug%" == "true" (
-    echo.Variables:>>%log%
-    echo.  debug=%setting_debug%>>%log%
-    echo.  filter_include=%setting_filter_include%>>%log%
-    echo.  filter_exclude=%setting_filter_exclude%>>%log%
-    echo.  log=%log%>>%log%
-    echo.>>%log%
-    echo.>>%log%
+(
+  for /f "delims=" %%i in ('dir /a:-d /b "%temp%\log_thread*" ^| find /i /c "log_thread"') do if "%%i" NEQ "0" (
+    echo.ReDuplicator Log File ^| %currentDate%
+    echo.
+    echo.
+    if "%setting_debug%" == "true" (
+      echo.Variables:
+      echo.  debug=%setting_debug%
+      echo.  filter_include=%setting_filter_include%
+      echo.  filter_exclude=%setting_filter_exclude%
+      echo.  multithreading=%setting_multithreading%
+      echo.
+      echo.  log=%log%
+      echo.  session=%session%
+      echo.  temp=%temp%
+      echo.
+      echo.
+    )
+    echo.
   )
-  echo.>>%log%
-)
 
-for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\log_thread%%i type %temp%\log_thread%%i>>%log%
+  for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\log_thread%%i type %temp%\log_thread%%i
+)>>%log%
 exit
 
 
@@ -447,12 +455,14 @@ if "%command%" == "4" if "%setting_debug%" == "true" ( set setting_debug=false
 
 
 
-echo.# ReDuplicator Settings #>%settings%
-echo.>>%settings%
-echo.debug=%setting_debug%>>%settings%
-echo.filter_include=%setting_filter_include%>>%settings%
-echo.filter_exclude=%setting_filter_exclude%>>%settings%
-echo.multithreading=%setting_multithreading%i>>%settings%
+(
+  echo.# ReDuplicator Settings #
+  echo.
+  echo.debug=%setting_debug%
+  echo.filter_include=%setting_filter_include%
+  echo.filter_exclude=%setting_filter_exclude%
+  echo.multithreading=%setting_multithreading%i
+)>>%settings%
 
 endlocal
 goto :screen_settings
