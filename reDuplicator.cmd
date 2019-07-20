@@ -130,7 +130,6 @@ goto :screen_main
 
 
 :screen_scan
-
 set counter_filesScanned=0
 for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_filesScanned%%i for /f "delims=" %%j in (%temp%\counter_filesScanned%%i) do set /a counter_filesScanned+=%%j
 set /a counter_filesScanned/=%setting_multithreading%
@@ -138,10 +137,13 @@ set /a counter_filesScanned/=%setting_multithreading%
 set counter_duplicates=0
 for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j
 
-for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do (
-  call :math_set counter_duplicates_size %%j
-)
-if exist %temp%\math_number_counter_duplicates_size for /f "delims=" %%i in (%temp%\math_number_counter_duplicates_size) do set counter_duplicates_size=%%i
+
+
+call :math_set counter_duplicates_size 0
+for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do call :math_add counter_duplicates_size %%j
+
+start /wait /b "" "%~dpnx0" --call=math_format --args=counter_duplicates_size
+if exist %temp%\math_number_format_counter_duplicates_size for /f "delims=" %%i in (%temp%\math_number_format_counter_duplicates_size) do set counter_duplicates_size=%%i
 
 
 
@@ -187,52 +189,49 @@ exit /b
 
 
 :math_set
-start /wait /b "" "%~dpnx0" --call=math_add --args=%1 %2
-for /f "delims=" %%i in (%temp%\math_number_%1) do start /wait /b "" "%~dpnx0" --call=math_format --args=%1 %%i
+echo.%2>%temp%\math_number_%1
 exit /b
 
 
 
 
 
+:math_add
+set math_add_number=0
+if exist "%temp%\math_number_%1" for /f "delims=" %%z in (%temp%\math_number_%1) do set math_add_number=%%z
+
+set /a math_add_number+=%2
+echo.%math_add_number%>%temp%\math_number_%1
+exit /b
+
 
 
 
 
 :math_format
-set    math_format_number_B_%1=%2
-set /a math_format_number_KB_%1=%2/1024
-set /a math_format_number_MB_%1=%2/1024/1024
-set /a math_format_number_GB_%1=%2/1024/1024/1024
-set /a math_format_number_TB_%1=%2/1024/1024/1024/1024
+for /f "delims=" %%z in (%temp%\math_number_%1) do (
+  set    math_number_format_B_%1=%%z
+  set /a math_number_format_KB_%1=%%z/1024
+  set /a math_number_format_MB_%1=%%z/1024/1024
+  set /a math_number_format_GB_%1=%%z/1024/1024/1024
+  set /a math_number_format_TB_%1=%%z/1024/1024/1024/1024
+)
 
 setlocal EnableDelayedExpansion
 
 (
-  if "!math_format_number_TB_%1!" NEQ "0" (
-    if !math_format_number_TB_%1! LSS !math_format_number_GB_%1! echo.!math_format_number_TB_%1! TB
-  ) else if "!math_format_number_GB_%1!" NEQ "0" (
-    if !math_format_number_GB_%1! LSS !math_format_number_MB_%1! echo.!math_format_number_GB_%1! GB
-  ) else if "!math_format_number_MB_%1!" NEQ "0" (
-    if !math_format_number_MB_%1! LSS !math_format_number_KB_%1! echo.!math_format_number_MB_%1! MB
-  ) else if "!math_format_number_KB_%1!" NEQ "0" (
-    if !math_format_number_KB_%1! LSS !math_format_number_B_%1! echo.!math_format_number_KB_%1! KB
-  ) else echo.!math_format_number_B_%1! bytes
-)>%temp%\math_format_number_%1
+  if "!math_number_format_TB_%1!" NEQ "0" (
+    if !math_number_format_TB_%1! LSS !math_number_format_GB_%1! echo.!math_number_format_TB_%1! TB
+  ) else if "!math_number_format_GB_%1!" NEQ "0" (
+    if !math_number_format_GB_%1! LSS !math_number_format_MB_%1! echo.!math_number_format_GB_%1! GB
+  ) else if "!math_number_format_MB_%1!" NEQ "0" (
+    if !math_number_format_MB_%1! LSS !math_number_format_KB_%1! echo.!math_number_format_MB_%1! MB
+  ) else if "!math_number_format_KB_%1!" NEQ "0" (
+    if !math_number_format_KB_%1! LSS !math_number_format_B_%1! echo.!math_number_format_KB_%1! KB
+  ) else echo.!math_number_format_B_%1! bytes
+)>%temp%\math_number_format_%1
 
 endlocal
-exit
-
-
-
-
-
-
-
-
-
-:math_add
-echo.%2>%temp%\math_number_%1
 exit
 
 
