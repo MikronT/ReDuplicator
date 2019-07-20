@@ -130,9 +130,15 @@ goto :screen_main
 
 
 :screen_scan
-set counter_filesScanned=0
-(for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_filesScanned%%i for /f "delims=" %%j in (%temp%\counter_filesScanned%%i) do set /a counter_filesScanned+=%%j)>nul 2>nul
-set /a counter_filesScanned/=%setting_multithreading%
+set counter_files_scanned=0
+(for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_files_scanned%%i for /f "delims=" %%j in (%temp%\counter_files_scanned%%i) do set /a counter_files_scanned+=%%j)>nul 2>nul
+set /a counter_files_scanned/=%setting_multithreading%
+
+set counter_files_all=0
+(if exist %temp%\counter_files_all for /f "delims=" %%i in (%temp%\counter_files_all) do set /a counter_files_all=%%i)>nul 2>nul
+
+if "%counter_files_all%" == "0" ( set operation=0
+) else set /a operation=%counter_files_scanned%*100/%counter_files_all%
 
 set counter_duplicates=0
 (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j)>nul 2>nul
@@ -152,7 +158,8 @@ setlocal EnableDelayedExpansion
 
 if exist %temp%\messages (
   type %temp%\messages
-  echo.    Files scanned    :^|:  %counter_filesScanned%
+  echo.    Files scanned    :^|:  %counter_files_scanned%/%counter_files_all%
+  echo.    Completed        :^|:  %operation% %%
   if "%counter_duplicates%" NEQ "0" (
     echo.    Duplicates       :^|:  %counter_duplicates%
     echo.    Duplicates size  :^|:  %counter_duplicates_size%
@@ -192,21 +199,22 @@ exit /b
 
 :scan_controller
 echo.^(i^) Getting directory tree...>>%temp%\messages
-set counter_dataLines=0
+set counter_files_all=0
 
 for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%setting_filter_include%*"') do for /f "delims=" %%j in ("%%i") do (
-  set /a counter_dataLines+=1
+  set /a counter_files_all+=1
   echo.%%i;%%~zj>>%temp%\data
 )
 
+echo.%counter_files_all%>%temp%\counter_files_all
 for /f "delims=" %%i in ("%temp%\data") do echo.    Directory tree data size: %%~zi bytes>>%temp%\messages
 echo.>>%temp%\messages
 
 
 
 echo.^(i^) Initialization...>>%temp%\messages
+set /a multithreading_linesPerThread=%counter_files_all%/%setting_multithreading%+1
 
-set /a multithreading_linesPerThread=%counter_dataLines%/%setting_multithreading%+1
 set counter_thread=1
 set counter_dataLines_min=0
 set counter_dataLines=0
@@ -299,13 +307,13 @@ exit /b
 if not exist %temp%\data_thread%1 exit
 
 setlocal EnableDelayedExpansion
-set counter_filesScanned=0
+set counter_files_scanned=0
 set counter_duplicates=0
 set counter_duplicates_size=0
 
 for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting_filter_exclude%"') do (
-  set /a counter_filesScanned+=1
-  echo.!counter_filesScanned!>%temp%\counter_filesScanned%1
+  set /a counter_files_scanned+=1
+  echo.!counter_files_scanned!>%temp%\counter_files_scanned%1
   for /f "tokens=1,2,* delims=;" %%o in ('type %temp%\data_thread%1 ^| find /i /v "%setting_filter_exclude%"') do (
     if "%%i" NEQ "%%o" if "%%j" == "%%p" (
       for /f "skip=1 tokens=2* delims=:" %%k in ('%module_rehash% -sha1 "%%i"') do (
