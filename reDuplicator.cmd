@@ -316,12 +316,12 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
               echo.
               echo.
 
-              if not exist "%log%" call :initiateLog
+              if not exist "%temp%\log_thread%1" call :initiateLog
 
-              echo.Duplicates:>>%log%
+              echo.Duplicates:>>%temp%\log_thread%1
               if "%setting_debug%" == "false" (
-                echo.    %%i>>%log%
-                echo.    %%o>>%log%
+                echo.    %%i>>%temp%\log_thread%1
+                echo.    %%o>>%temp%\log_thread%1
               ) else (
                 echo.    %%i
                 echo.        size: %%j bytes
@@ -330,9 +330,9 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
                 echo.        size: %%p bytes
                 echo.        sha1:%%q
                 echo.
-              )>>%log%
-              echo.>>%log%
-              echo.>>%log%
+              )>>%temp%\log_thread%1
+              echo.>>%temp%\log_thread%1
+              echo.>>%temp%\log_thread%1
             )
           )
         )
@@ -343,6 +343,30 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
 
 endlocal
 exit
+
+
+
+
+
+
+
+
+
+:initiateLog
+echo.ReDuplicator Log File ^| %currentDate%>>%log%
+echo.>>%log%
+echo.>>%log%
+if "%setting_debug%" == "true" (
+  echo.Variables:>>%log%
+  echo.  debug=%setting_debug%>>%log%
+  echo.  filter_include=%setting_filter_include%>>%log%
+  echo.  filter_exclude=%setting_filter_exclude%>>%log%
+  echo.  log=%log%>>%log%
+  echo.>>%log%
+  echo.>>%log%
+)
+echo.>>%log%
+exit /b
 
 
 
@@ -471,28 +495,4 @@ exit /b
 if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
 
 for /f "delims=i" %%i in ("%setting_multithreading%") do set setting_multithreading=%%i
-exit /b
-
-
-
-
-
-
-
-
-
-:initiateLog
-echo.ReDuplicator Log File ^| %currentDate%>>%log%
-echo.>>%log%
-echo.>>%log%
-if "%setting_debug%" == "true" (
-  echo.Variables:>>%log%
-  echo.  debug=%setting_debug%>>%log%
-  echo.  filter_include=%setting_filter_include%>>%log%
-  echo.  filter_exclude=%setting_filter_exclude%>>%log%
-  echo.  log=%log%>>%log%
-  echo.>>%log%
-  echo.>>%log%
-)
-echo.>>%log%
 exit /b
