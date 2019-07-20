@@ -48,10 +48,8 @@ if exist "%directory%" (
   for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
 )
 
-if "%key_call%" NEQ "" (
-  %logo% %title_scan% %key_thread%
-  call :%key_call% %key_thread%
-)
+if "%key_call%" == "scan" %logo% %title_scan% %key_thread%
+if "%key_call%" NEQ "" call :%key_call% %key_thread%
 
 
 
