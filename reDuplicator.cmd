@@ -217,10 +217,14 @@ echo.^(i^) Completed^!>>%temp%\messages
 echo.>>%temp%\messages
 
 if exist %log_duplicates% (
-  echo.^(i^) All info saved into the %log_duplicates% file>>%temp%\messages
+  echo.^(i^) All info saved into the  %log_duplicates%  file>>%temp%\messages
   for /f "delims=" %%i in ("%log_duplicates%") do echo.^(i^) Log file size: %%~zi bytes>>%temp%\messages
 ) else echo.^(^!^) Any duplicates not found>>%temp%\messages
 exit
+
+
+
+
 
 
 
@@ -235,6 +239,10 @@ if exist "%log_duplicates%" goto :cycle_log_name
 
 
 
+
+
+
+
 :cycle_multithread_initializing
 call :multithread_data_writing
 
@@ -244,6 +252,10 @@ set /a counter_thread+=1
 set /a counter_dataLines_min+=%multithreading_linesPerThread%
 set /a counter_dataLines_max+=%multithreading_linesPerThread%
 goto :cycle_multithread_initializing
+
+
+
+
 
 
 
