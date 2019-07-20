@@ -156,12 +156,10 @@ goto :screen_scan
 
 
 :scan_controller
-set counter_log=0
+set log_duplicates=logs\reDuplicator_%currentDate%_%session%.txt
 
-:cycle_log_name
-set /a counter_log+=1
-set log_duplicates=logs\reDuplicator_%currentDate%_%counter_log%.txt
-if exist "%log_duplicates%" goto :cycle_log_name
+set counter_log=0
+if exist "%log_duplicates%" call :cycle_log_name
 
 
 
@@ -223,6 +221,15 @@ if exist %log_duplicates% (
   for /f "delims=" %%i in ("%log_duplicates%") do echo.^(i^) Log file size: %%~zi bytes>>%temp%\messages
 ) else echo.^(^!^) Any duplicates not found>>%temp%\messages
 exit
+
+
+
+
+
+:cycle_log_name
+set /a counter_log+=1
+set log_duplicates=logs\reDuplicator_%currentDate%_%session%_%counter_log%.txt
+if exist "%log_duplicates%" goto :cycle_log_name
 
 
 
