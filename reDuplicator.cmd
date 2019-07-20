@@ -103,7 +103,6 @@ echo.
 
 if "%command%" == "1" (
   start /b "" "%~dpnx0" --call=scan_controller
-  start /b "" "%~dpnx0" --call=log_controller
   call :screen_scan
 )
 if "%command%" == "2" call :screen_settings
@@ -158,7 +157,6 @@ goto :screen_scan
 
 :scan_controller
 set log=logs\reDuplicator_%currentDate%_%session%.txt
-
 set counter_log=0
 if exist "%log%" call :cycle_log_name
 
@@ -207,20 +205,22 @@ if "%counter_scanWait%" == "0" goto :cycle_scanWait_outPoint
 goto :cycle_scanWait
 :cycle_scanWait_outPoint
 
-
-
-timeout /nobreak /t 1 >nul
-echo.>%temp%\session_completed
-
-
-
 echo.^(i^) Completed^!>>%temp%\messages
 echo.>>%temp%\messages
+
+
+
+start /wait /b "" "%~dpnx0" --call=log_controller
 
 if exist %log% (
   echo.^(i^) All info saved into the  %log%  file>>%temp%\messages
   for /f "delims=" %%i in ("%log%") do echo.^(i^) Log file size: %%~zi bytes>>%temp%\messages
 ) else echo.^(^!^) Any duplicates not found>>%temp%\messages
+
+
+
+timeout /nobreak /t 1 >nul
+echo.>%temp%\session_completed
 exit
 
 
