@@ -83,8 +83,8 @@ for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%
 
 
 
-%logo%
 %input_clear%
+%logo%
 
 echo.^(i^) Session: %session%
 echo.
