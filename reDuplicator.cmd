@@ -201,9 +201,7 @@ timeout /nobreak /t 1 >nul
 for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq %app_name%   Session: %session%   Thread*" ^| find /i /c "cmd.exe"') do set /a counter_scanWait+=%%i
 for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq Select %app_name%   Session: %session%   Thread*" ^| find /i /c "cmd.exe"') do set /a counter_scanWait+=%%i
 
-if "%counter_scanWait%" == "0" goto :cycle_scanWait_outPoint
-goto :cycle_scanWait
-:cycle_scanWait_outPoint
+if "%counter_scanWait%" NEQ "0" goto :cycle_scanWait
 
 
 
