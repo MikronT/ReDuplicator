@@ -9,6 +9,9 @@ cd "%~dp0"
 set app_name=ReDuplicator
 set app_version=Alpha 1
 
+set title_main=[MikronT] %app_name% %app_version%
+set title_scan=%app_name%   Session: %session%   Thread
+
 set setting_debug=false
 set setting_filter_include=
 set setting_filter_exclude=
@@ -18,6 +21,7 @@ set settings=settings.ini
 
 set module_rehash=modules\rehash.exe -norecur -none
 
+set getProcessesCount=call :getProcessesCount
 set input=set /p command= ^^^> 
 set input_clear=set command=
 set logo=call :logo
@@ -45,9 +49,14 @@ if exist "%directory%" (
 )
 
 if "%key_call%" NEQ "" (
-  %logo% %app_name%   Session: %session%   Thread %key_thread%
+  %logo% %title_scan% %key_thread%
   call :%key_call% %key_thread%
 )
+
+
+
+%getProcessesCount% %title_main%*
+if "%counter_processes%" == "2" exit
 
 
 
@@ -195,13 +204,9 @@ timeout /nobreak /t %setting_multithreading% >nul
 
 
 :cycle_scanWait
-set counter_scanWait=0
 timeout /nobreak /t 1 >nul
-
-for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq %app_name%   Session: %session%   Thread*" ^| find /i /c "cmd.exe"') do set /a counter_scanWait+=%%i
-for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq Select %app_name%   Session: %session%   Thread*" ^| find /i /c "cmd.exe"') do set /a counter_scanWait+=%%i
-
-if "%counter_scanWait%" NEQ "0" goto :cycle_scanWait
+%getProcessesCount% %title_scan%*
+if "%counter_processes%" NEQ "0" goto :cycle_scanWait
 
 
 
@@ -459,7 +464,7 @@ goto :screen_settings
 
 
 :logo
-if "%*" == "" ( title [MikronT] %app_name% %app_version% ^| Session: %session% ^| %directory%
+if "%*" == "" ( title %title_main% ^| Session: %session% ^| %directory%
 ) else title %*
 color 0b
 cls
@@ -487,4 +492,19 @@ exit /b
 if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
 
 for /f "delims=i" %%i in ("%setting_multithreading%") do set setting_multithreading=%%i
+exit /b
+
+
+
+
+
+
+
+
+
+:getProcessesCount
+set counter_processes=0
+
+for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq %*" ^| find /i /c "cmd.exe"') do set /a counter_processes+=%%i
+for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq Select %*" ^| find /i /c "cmd.exe"') do set /a counter_processes+=%%i
 exit /b
