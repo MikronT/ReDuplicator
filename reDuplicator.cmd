@@ -219,7 +219,6 @@ if exist %log% (
 
 
 
-timeout /nobreak /t 1 >nul
 echo.>%temp%\session_completed
 exit
 
