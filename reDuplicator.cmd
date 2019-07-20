@@ -156,7 +156,6 @@ goto :screen_scan
 
 
 :scan_controller
-echo.>%temp%\duplicates
 set counter_log=0
 
 :cycle_log_name
@@ -191,6 +190,8 @@ call :cycle_multithread_initializing
 
 
 echo.^(i^) Starting file comparing threads...>>%temp%\messages
+echo.>%temp%\duplicates
+
 for /l %%i in (1, 1, %setting_multithreading%) do start "" "%~dpnx0" --call=scan --thread=%%i
 timeout /nobreak /t 2 >nul
 
