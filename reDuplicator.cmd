@@ -351,6 +351,11 @@ echo.
 if "%setting_multithreading%" == "1" ( echo.    ^(3^) Multithreading: false
 ) else echo.    ^(3^) Multithreading ^(threads^): %setting_multithreading%
 
+if %setting_multithreading% GTR 3 (
+  echo.       ^(i^) Warning^! More threads - more bugs^!
+  echo.
+)
+
 echo.    ^(4^) Debug: %setting_debug%
 echo.
 echo.    ^(0^) Go back
