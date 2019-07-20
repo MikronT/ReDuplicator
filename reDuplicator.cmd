@@ -72,14 +72,16 @@ set session=%random%%random%
 set temp=temp\session-%session%
 if exist "%temp%" goto :cycle_sessionSet
 
-if not exist logs md logs
-if not exist %temp% md %temp%
-
-
-
 set currentDate=%date%
 for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
 for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%j.%%i
+
+if not exist logs md logs
+if not exist %temp% md %temp%
+
+set log=logs\reDuplicator_%currentDate%_%session%.txt
+set counter_log=0
+if exist "%log%" call :cycle_log_name
 
 
 
@@ -132,29 +134,44 @@ goto :screen_main
 :screen_scan
 set counter_duplicates=0
 for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j
+
 set counter_filesScanned=0
 for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_filesScanned%%i for /f "delims=" %%j in (%temp%\counter_filesScanned%%i) do set /a counter_filesScanned+=%%j
 set /a counter_filesScanned/=%setting_multithreading%
 
+
+
 %logo%
+
 if exist %temp%\messages (
   type %temp%\messages
-  echo.
-)
-echo.^(i^) Files scanned: %counter_filesScanned%
-echo.^(i^) Duplicates:    %counter_duplicates%
-
-if exist "%temp%\session_completed" (
-  echo.
-  echo.
-  echo.
-  echo.^(i^) Press Enter to go to the main menu
-  pause>nul
-  exit /b
+  echo.    Files scanned: %counter_filesScanned%
+  echo.    Duplicates:    %counter_duplicates%
 )
 
-timeout /t 3 >nul
-goto :screen_scan
+
+
+if not exist "%temp%\session_completed" (
+  timeout /t 3 >nul
+  goto :screen_scan
+)
+
+
+
+echo.    Completed^!
+echo.
+
+if exist "%log%" (
+  echo.^(i^) All info saved into the log file:
+  for /f "delims=" %%i in ("%log%") do echo.      %log%  :^|:  %%~zi bytes
+) else echo.^(^!^) Any duplicates not found
+
+echo.
+echo.
+echo.
+echo.^(i^) Press Enter to go to the main menu
+pause>nul
+exit /b
 
 
 
@@ -165,12 +182,6 @@ goto :screen_scan
 
 
 :scan_controller
-set log=logs\reDuplicator_%currentDate%_%session%.txt
-set counter_log=0
-if exist "%log%" call :cycle_log_name
-
-
-
 echo.^(i^) Getting directory tree...>>%temp%\messages
 set counter_dataLines=0
 
@@ -179,7 +190,7 @@ for /f "delims=" %%i in ('dir /a:-d /b /s "%directory%\*%setting_filter_include%
   echo.%%i;%%~zj>>%temp%\data
 )
 
-for /f "delims=" %%i in ("%temp%\data") do echo.^(i^) Directory tree data size: %%~zi bytes>>%temp%\messages
+for /f "delims=" %%i in ("%temp%\data") do echo.    Directory tree data size: %%~zi bytes>>%temp%\messages
 echo.>>%temp%\messages
 
 
@@ -192,6 +203,9 @@ set counter_dataLines_min=0
 set counter_dataLines=0
 set counter_dataLines_max=%multithreading_linesPerThread%
 call :cycle_multithread_initializing
+
+echo.    Initialized: %setting_multithreading% threads>>%temp%\messages
+echo.>>%temp%\messages
 
 
 
@@ -211,18 +225,6 @@ if "%counter_processes%" NEQ "0" goto :cycle_scanWait
 
 
 start /wait /b "" "%~dpnx0" --call=log_controller
-
-
-
-echo.^(i^) Completed^!>>%temp%\messages
-echo.>>%temp%\messages
-
-if exist %log% (
-  echo.^(i^) All info saved into the  %log%  file>>%temp%\messages
-  for /f "delims=" %%i in ("%log%") do echo.^(i^) Log file size: %%~zi bytes>>%temp%\messages
-) else echo.^(^!^) Any duplicates not found>>%temp%\messages
-
-
 
 echo.>%temp%\session_completed
 exit
