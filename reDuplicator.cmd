@@ -157,10 +157,10 @@ goto :screen_scan
 
 
 :scan_controller
-set log_duplicates=logs\reDuplicator_%currentDate%_%session%.txt
+set log=logs\reDuplicator_%currentDate%_%session%.txt
 
 set counter_log=0
-if exist "%log_duplicates%" call :cycle_log_name
+if exist "%log%" call :cycle_log_name
 
 
 
@@ -217,9 +217,9 @@ echo.>%temp%\session_completed
 echo.^(i^) Completed^!>>%temp%\messages
 echo.>>%temp%\messages
 
-if exist %log_duplicates% (
-  echo.^(i^) All info saved into the  %log_duplicates%  file>>%temp%\messages
-  for /f "delims=" %%i in ("%log_duplicates%") do echo.^(i^) Log file size: %%~zi bytes>>%temp%\messages
+if exist %log% (
+  echo.^(i^) All info saved into the  %log%  file>>%temp%\messages
+  for /f "delims=" %%i in ("%log%") do echo.^(i^) Log file size: %%~zi bytes>>%temp%\messages
 ) else echo.^(^!^) Any duplicates not found>>%temp%\messages
 exit
 
@@ -233,8 +233,8 @@ exit
 
 :cycle_log_name
 set /a counter_log+=1
-set log_duplicates=logs\reDuplicator_%currentDate%_%session%_%counter_log%.txt
-if exist "%log_duplicates%" goto :cycle_log_name
+set log=logs\reDuplicator_%currentDate%_%session%_%counter_log%.txt
+if exist "%log%" goto :cycle_log_name
 
 
 
@@ -316,12 +316,12 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
               echo.
               echo.
 
-              if not exist "%log_duplicates%" call :initiateLog
+              if not exist "%log%" call :initiateLog
 
-              echo.Duplicates:>>%log_duplicates%
+              echo.Duplicates:>>%log%
               if "%setting_debug%" == "false" (
-                echo.    %%i>>%log_duplicates%
-                echo.    %%o>>%log_duplicates%
+                echo.    %%i>>%log%
+                echo.    %%o>>%log%
               ) else (
                 echo.    %%i
                 echo.        size: %%j bytes
@@ -330,9 +330,9 @@ for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting
                 echo.        size: %%p bytes
                 echo.        sha1:%%q
                 echo.
-              )>>%log_duplicates%
-              echo.>>%log_duplicates%
-              echo.>>%log_duplicates%
+              )>>%log%
+              echo.>>%log%
+              echo.>>%log%
             )
           )
         )
@@ -482,17 +482,17 @@ exit /b
 
 
 :initiateLog
-echo.ReDuplicator Log File ^| %currentDate%>>%log_duplicates%
-echo.>>%log_duplicates%
-echo.>>%log_duplicates%
+echo.ReDuplicator Log File ^| %currentDate%>>%log%
+echo.>>%log%
+echo.>>%log%
 if "%setting_debug%" == "true" (
-  echo.Variables:>>%log_duplicates%
-  echo.  debug=%setting_debug%>>%log_duplicates%
-  echo.  filter_include=%setting_filter_include%>>%log_duplicates%
-  echo.  filter_exclude=%setting_filter_exclude%>>%log_duplicates%
-  echo.  log_duplicates=%log_duplicates%>>%log_duplicates%
-  echo.>>%log_duplicates%
-  echo.>>%log_duplicates%
+  echo.Variables:>>%log%
+  echo.  debug=%setting_debug%>>%log%
+  echo.  filter_include=%setting_filter_include%>>%log%
+  echo.  filter_exclude=%setting_filter_exclude%>>%log%
+  echo.  log=%log%>>%log%
+  echo.>>%log%
+  echo.>>%log%
 )
-echo.>>%log_duplicates%
+echo.>>%log%
 exit /b
