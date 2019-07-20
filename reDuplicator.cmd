@@ -7,7 +7,7 @@ cd "%~dp0"
 
 
 set app_name=ReDuplicator
-set app_version=Pre-Alpha
+set app_version=Alpha 1
 
 set setting_debug=false
 set setting_filter_include=
@@ -470,7 +470,7 @@ echo.
 echo.
 echo.    [MikronT] ==^> %app_name%
 echo.                  %app_version%
-echo.   =============================
+echo.   ============================
 echo.     See other here:
 echo.         github.com/MikronT
 echo.
