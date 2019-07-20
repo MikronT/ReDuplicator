@@ -205,12 +205,14 @@ if "%counter_scanWait%" == "0" goto :cycle_scanWait_outPoint
 goto :cycle_scanWait
 :cycle_scanWait_outPoint
 
-echo.^(i^) Completed^!>>%temp%\messages
-echo.>>%temp%\messages
-
 
 
 start /wait /b "" "%~dpnx0" --call=log_controller
+
+
+
+echo.^(i^) Completed^!>>%temp%\messages
+echo.>>%temp%\messages
 
 if exist %log% (
   echo.^(i^) All info saved into the  %log%  file>>%temp%\messages
