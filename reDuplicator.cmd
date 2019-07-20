@@ -12,7 +12,7 @@ set app_version=Pre-Alpha
 set setting_debug=false
 set setting_filter_include=
 set setting_filter_exclude=
-set setting_multithreading=3
+set setting_multithreading=2
 
 set settings=settings.ini
 
@@ -383,7 +383,7 @@ echo.
 if "%setting_multithreading%" == "1" ( echo.    ^(3^) Multithreading: false
 ) else echo.    ^(3^) Multithreading ^(threads^): %setting_multithreading%
 
-if %setting_multithreading% GTR 3 (
+if %setting_multithreading% GTR 2 (
   echo.       ^(i^) Warning^! More threads - more bugs^!
   echo.
 )
