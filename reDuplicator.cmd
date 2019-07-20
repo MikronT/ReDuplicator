@@ -137,13 +137,13 @@ set /a counter_filesScanned/=%setting_multithreading%
 set counter_duplicates=0
 for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j
 
+if "%counter_duplicates%" NEQ "0" (
+  call :math_set counter_duplicates_size 0
+  for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do call :math_add counter_duplicates_size %%j
 
-
-call :math_set counter_duplicates_size 0
-for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do call :math_add counter_duplicates_size %%j
-
-start /wait /b "" "%~dpnx0" --call=math_format --args=counter_duplicates_size
-if exist %temp%\math_number_format_counter_duplicates_size for /f "delims=" %%i in (%temp%\math_number_format_counter_duplicates_size) do set counter_duplicates_size=%%i
+  start /wait /b "" "%~dpnx0" --call=math_format --args=counter_duplicates_size
+  if exist %temp%\math_number_format_counter_duplicates_size for /f "delims=" %%i in (%temp%\math_number_format_counter_duplicates_size) do set counter_duplicates_size=%%i
+)
 
 
 
@@ -153,8 +153,10 @@ setlocal EnableDelayedExpansion
 if exist %temp%\messages (
   type %temp%\messages
   echo.    Files scanned    :^|:  %counter_filesScanned%
-  echo.    Duplicates       :^|:  %counter_duplicates%
-  echo.    Duplicates size  :^|:  %counter_duplicates_size%
+  if "%counter_duplicates%" NEQ "0" (
+    echo.    Duplicates       :^|:  %counter_duplicates%
+    echo.    Duplicates size  :^|:  %counter_duplicates_size%
+  )
   echo.
 )
 endlocal
@@ -179,60 +181,6 @@ echo.
 echo.^(i^) Press Enter to go to the main menu
 pause>nul
 exit /b
-
-
-
-
-
-
-
-
-
-:math_set
-echo.%2>%temp%\math_number_%1
-exit /b
-
-
-
-
-
-:math_add
-set math_add_number=0
-if exist "%temp%\math_number_%1" for /f "delims=" %%z in (%temp%\math_number_%1) do set math_add_number=%%z
-
-set /a math_add_number+=%2
-echo.%math_add_number%>%temp%\math_number_%1
-exit /b
-
-
-
-
-
-:math_format
-for /f "delims=" %%z in (%temp%\math_number_%1) do (
-  set    math_number_format_B_%1=%%z
-  set /a math_number_format_KB_%1=%%z/1024
-  set /a math_number_format_MB_%1=%%z/1024/1024
-  set /a math_number_format_GB_%1=%%z/1024/1024/1024
-  set /a math_number_format_TB_%1=%%z/1024/1024/1024/1024
-)
-
-setlocal EnableDelayedExpansion
-
-(
-  if "!math_number_format_TB_%1!" NEQ "0" (
-    if !math_number_format_TB_%1! LSS !math_number_format_GB_%1! echo.!math_number_format_TB_%1! TB
-  ) else if "!math_number_format_GB_%1!" NEQ "0" (
-    if !math_number_format_GB_%1! LSS !math_number_format_MB_%1! echo.!math_number_format_GB_%1! GB
-  ) else if "!math_number_format_MB_%1!" NEQ "0" (
-    if !math_number_format_MB_%1! LSS !math_number_format_KB_%1! echo.!math_number_format_MB_%1! MB
-  ) else if "!math_number_format_KB_%1!" NEQ "0" (
-    if !math_number_format_KB_%1! LSS !math_number_format_B_%1! echo.!math_number_format_KB_%1! KB
-  ) else echo.!math_number_format_B_%1! bytes
-)>%temp%\math_number_format_%1
-
-endlocal
-exit
 
 
 
@@ -592,3 +540,57 @@ set counter_processes=0
 for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq %*" ^| find /i /c "cmd.exe"') do set /a counter_processes+=%%i
 for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq Select %*" ^| find /i /c "cmd.exe"') do set /a counter_processes+=%%i
 exit /b
+
+
+
+
+
+
+
+
+
+:math_set
+echo.%2>%temp%\math_number_%1
+exit /b
+
+
+
+
+
+:math_add
+set math_add_number=0
+if exist "%temp%\math_number_%1" for /f "delims=" %%z in (%temp%\math_number_%1) do set math_add_number=%%z
+
+set /a math_add_number+=%2
+echo.%math_add_number%>%temp%\math_number_%1
+exit /b
+
+
+
+
+
+:math_format
+for /f "delims=" %%z in (%temp%\math_number_%1) do (
+  set    math_number_format_B_%1=%%z
+  set /a math_number_format_KB_%1=%%z/1024
+  set /a math_number_format_MB_%1=%%z/1024/1024
+  set /a math_number_format_GB_%1=%%z/1024/1024/1024
+  set /a math_number_format_TB_%1=%%z/1024/1024/1024/1024
+)
+
+setlocal EnableDelayedExpansion
+
+(
+  if "!math_number_format_TB_%1!" NEQ "0" (
+    if !math_number_format_TB_%1! LSS !math_number_format_GB_%1! echo.!math_number_format_TB_%1! TB
+  ) else if "!math_number_format_GB_%1!" NEQ "0" (
+    if !math_number_format_GB_%1! LSS !math_number_format_MB_%1! echo.!math_number_format_GB_%1! GB
+  ) else if "!math_number_format_MB_%1!" NEQ "0" (
+    if !math_number_format_MB_%1! LSS !math_number_format_KB_%1! echo.!math_number_format_MB_%1! MB
+  ) else if "!math_number_format_KB_%1!" NEQ "0" (
+    if !math_number_format_KB_%1! LSS !math_number_format_B_%1! echo.!math_number_format_KB_%1! KB
+  ) else echo.!math_number_format_B_%1! bytes
+)>%temp%\math_number_format_%1
+
+endlocal
+exit
