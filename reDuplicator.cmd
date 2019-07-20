@@ -380,11 +380,11 @@ exit
 
 
 :screen_settings
-%logo%
-set buffer=
-%input_clear%
-
 %settings_import%
+set buffer=
+
+%input_clear%
+%logo%
 
 echo.^(i^) Settings Menu
 echo.    Filters:
