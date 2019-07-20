@@ -113,7 +113,7 @@ echo.
 
 
 if "%command%" == "1" (
-  start /b "" "%~dpnx0" --call=scan_controller
+  start %debugModifier_b% "" "%~dpnx0" --call=scan_controller
   call :screen_scan
 )
 if "%command%" == "2" call :screen_settings
@@ -212,8 +212,8 @@ echo.>>%temp%\messages
 echo.^(i^) Starting file comparing threads...>>%temp%\messages
 
 echo.>%temp%\duplicates
-for /l %%i in (1, 1, %setting_multithreading%) do start "" "%~dpnx0" --call=scan --thread=%%i
-timeout /nobreak /t %setting_multithreading% >nul
+for /l %%i in (1, 1, %setting_multithreading%) do start %debugModifier_min% "" "%~dpnx0" --call=scan --thread=%%i
+timeout /nobreak /t 2 >nul
 
 
 
@@ -224,7 +224,7 @@ if "%counter_processes%" NEQ "0" goto :cycle_scanWait
 
 
 
-start /wait /b "" "%~dpnx0" --call=log_controller
+start /wait %debugModifier_b% "" "%~dpnx0" --call=log_controller
 
 echo.>%temp%\session_completed
 exit
@@ -503,6 +503,13 @@ exit /b
 :settings_import
 if exist "%settings%" for /f "eol=# delims=" %%i in (%settings%) do set setting_%%i
 
+if "%setting_debug%" == "true" (
+  set debugModifier_b=
+  set debugModifier_min=
+) else (
+  set debugModifier_b=/b
+  set debugModifier_min=/min
+)
 for /f "delims=i" %%i in ("%setting_multithreading%") do set setting_multithreading=%%i
 exit /b
 
