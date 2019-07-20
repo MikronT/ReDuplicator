@@ -152,9 +152,9 @@ setlocal EnableDelayedExpansion
 
 if exist %temp%\messages (
   type %temp%\messages
-  echo.    Files scanned:   %counter_filesScanned%
-  echo.    Duplicates:      %counter_duplicates%
-  echo.    Duplicates size: %counter_duplicates_size%
+  echo.    Files scanned    :^|:  %counter_filesScanned%
+  echo.    Duplicates       :^|:  %counter_duplicates%
+  echo.    Duplicates size  :^|:  %counter_duplicates_size%
   echo.
 )
 endlocal
