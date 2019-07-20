@@ -283,6 +283,8 @@ exit /b
 
 
 :scan
+if not exist %temp%\data_thread%1 exit
+
 setlocal EnableDelayedExpansion
 set counter_filesScanned=0
 set counter_duplicates=0
