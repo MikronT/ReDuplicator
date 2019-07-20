@@ -37,7 +37,7 @@ set argument=%1
 set argument=%argument:"=%
 
 if exist "%argument%" ( set directory=%argument%
-) else for /f "tokens=1,2,* delims=- " %%i in ("%*") do (
+) else for /f "tokens=1,* delims=- " %%i in ("%*") do (
   if "%%i" NEQ "" set key_%%i
   if "%%j" NEQ "" set key_%%j
 )
@@ -48,8 +48,8 @@ if exist "%directory%" (
   for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
 )
 
-if "%key_call%" == "scan" %logo% %title_scan% %key_thread%
-if "%key_call%" NEQ "" call :%key_call% %key_thread%
+if "%key_call%" == "scan" %logo% %title_scan% %key_args%
+if "%key_call%" NEQ "" call :%key_call% %key_args%
 
 
 
@@ -130,22 +130,32 @@ goto :screen_main
 
 
 :screen_scan
-set counter_duplicates=0
-for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j
 
 set counter_filesScanned=0
 for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_filesScanned%%i for /f "delims=" %%j in (%temp%\counter_filesScanned%%i) do set /a counter_filesScanned+=%%j
 set /a counter_filesScanned/=%setting_multithreading%
 
+set counter_duplicates=0
+for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j
+
+for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do (
+  call :math_set counter_duplicates_size %%j
+)
+if exist %temp%\math_number_counter_duplicates_size for /f "delims=" %%i in (%temp%\math_number_counter_duplicates_size) do set counter_duplicates_size=%%i
 
 
+
+setlocal EnableDelayedExpansion
 %logo%
 
 if exist %temp%\messages (
   type %temp%\messages
-  echo.    Files scanned: %counter_filesScanned%
-  echo.    Duplicates:    %counter_duplicates%
+  echo.    Files scanned:   %counter_filesScanned%
+  echo.    Duplicates:      %counter_duplicates%
+  echo.    Duplicates size: %counter_duplicates_size%
+  echo.
 )
+endlocal
 
 
 
@@ -155,9 +165,6 @@ if not exist "%temp%\session_completed" (
 )
 
 
-
-echo.    Completed^!
-echo.
 
 if exist "%log%" (
   echo.^(i^) All info saved into the log file:
@@ -170,6 +177,63 @@ echo.
 echo.^(i^) Press Enter to go to the main menu
 pause>nul
 exit /b
+
+
+
+
+
+
+
+
+
+:math_set
+start /wait /b "" "%~dpnx0" --call=math_add --args=%1 %2
+for /f "delims=" %%i in (%temp%\math_number_%1) do start /wait /b "" "%~dpnx0" --call=math_format --args=%1 %%i
+exit /b
+
+
+
+
+
+
+
+
+
+:math_format
+set    math_format_number_B_%1=%2
+set /a math_format_number_KB_%1=%2/1024
+set /a math_format_number_MB_%1=%2/1024/1024
+set /a math_format_number_GB_%1=%2/1024/1024/1024
+set /a math_format_number_TB_%1=%2/1024/1024/1024/1024
+
+setlocal EnableDelayedExpansion
+
+(
+  if "!math_format_number_TB_%1!" NEQ "0" (
+    if !math_format_number_TB_%1! LSS !math_format_number_GB_%1! echo.!math_format_number_TB_%1! TB
+  ) else if "!math_format_number_GB_%1!" NEQ "0" (
+    if !math_format_number_GB_%1! LSS !math_format_number_MB_%1! echo.!math_format_number_GB_%1! GB
+  ) else if "!math_format_number_MB_%1!" NEQ "0" (
+    if !math_format_number_MB_%1! LSS !math_format_number_KB_%1! echo.!math_format_number_MB_%1! MB
+  ) else if "!math_format_number_KB_%1!" NEQ "0" (
+    if !math_format_number_KB_%1! LSS !math_format_number_B_%1! echo.!math_format_number_KB_%1! KB
+  ) else echo.!math_format_number_B_%1! bytes
+)>%temp%\math_format_number_%1
+
+endlocal
+exit
+
+
+
+
+
+
+
+
+
+:math_add
+echo.%2>%temp%\math_number_%1
+exit
 
 
 
@@ -210,7 +274,7 @@ echo.>>%temp%\messages
 echo.^(i^) Starting file comparing threads...>>%temp%\messages
 
 echo.>%temp%\duplicates
-for /l %%i in (1, 1, %setting_multithreading%) do start %debugModifier_min% "" "%~dpnx0" --call=scan --thread=%%i
+for /l %%i in (1, 1, %setting_multithreading%) do start %debugModifier_min% "" "%~dpnx0" --call=scan --args=%%i
 timeout /nobreak /t 2 >nul
 
 
