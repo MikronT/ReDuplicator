@@ -586,27 +586,29 @@ exit /b
 
 
 :math_format
+set math_number_format_B=0
+set math_number_format_KB=0
+set math_number_format_MB=0
+set math_number_format_GB=0
+set math_number_format_TB=0
+
 for /f "delims=" %%z in (%temp%\math_number_%1) do (
-  set    math_number_format_B_%1=%%z
-  set /a math_number_format_KB_%1=%%z/1024
-  set /a math_number_format_MB_%1=%%z/1024/1024
-  set /a math_number_format_GB_%1=%%z/1024/1024/1024
-  set /a math_number_format_TB_%1=%%z/1024/1024/1024/1024
+  set    math_number_format_B=%%z
+  set /a math_number_format_KB=%%z/1024
+  set /a math_number_format_MB=%%z/1024/1024
+  set /a math_number_format_GB=%%z/1024/1024/1024
+  set /a math_number_format_TB=%%z/1024/1024/1024/1024
 )
 
-setlocal EnableDelayedExpansion
-
 (
-  if "!math_number_format_TB_%1!" NEQ "0" (
-    if !math_number_format_TB_%1! LSS !math_number_format_GB_%1! echo.!math_number_format_TB_%1! TB
-  ) else if "!math_number_format_GB_%1!" NEQ "0" (
-    if !math_number_format_GB_%1! LSS !math_number_format_MB_%1! echo.!math_number_format_GB_%1! GB
-  ) else if "!math_number_format_MB_%1!" NEQ "0" (
-    if !math_number_format_MB_%1! LSS !math_number_format_KB_%1! echo.!math_number_format_MB_%1! MB
-  ) else if "!math_number_format_KB_%1!" NEQ "0" (
-    if !math_number_format_KB_%1! LSS !math_number_format_B_%1! echo.!math_number_format_KB_%1! KB
-  ) else echo.!math_number_format_B_%1! bytes
+  if "%math_number_format_TB%" NEQ "0" (
+    if %math_number_format_TB% LSS %math_number_format_GB% echo.%math_number_format_TB% TB
+  ) else if "%math_number_format_GB%" NEQ "0" (
+    if %math_number_format_GB% LSS %math_number_format_MB% echo.%math_number_format_GB% GB
+  ) else if "%math_number_format_MB%" NEQ "0" (
+    if %math_number_format_MB% LSS %math_number_format_KB% echo.%math_number_format_MB% MB
+  ) else if "%math_number_format_KB%" NEQ "0" (
+    if %math_number_format_KB% LSS %math_number_format_B% echo.%math_number_format_KB% KB
+  ) else echo.%math_number_format_B% bytes
 )>%temp%\math_number_format_%1
-
-endlocal
 exit
