@@ -384,29 +384,27 @@ exit
 
 
 :log_controller
-(
   for /f "delims=" %%i in ('dir /a:-d /b "%temp%\log_thread*" ^| find /i /c "log_thread"') do if "%%i" NEQ "0" (
-    echo.ReDuplicator Log File ^| %currentDate%
+  echo.ReDuplicator Log File ^| %currentDate%
+  echo.
+  echo.
+  if "%setting_debug%" == "true" (
+    echo.Variables:
+    echo.  debug=%setting_debug%
+    echo.  filter_include=%setting_filter_include%
+    echo.  filter_exclude=%setting_filter_exclude%
+    echo.  multithreading=%setting_multithreading%
     echo.
+    echo.  log=%log%
+    echo.  session=%session%
+    echo.  temp=%temp%
     echo.
-    if "%setting_debug%" == "true" (
-      echo.Variables:
-      echo.  debug=%setting_debug%
-      echo.  filter_include=%setting_filter_include%
-      echo.  filter_exclude=%setting_filter_exclude%
-      echo.  multithreading=%setting_multithreading%
-      echo.
-      echo.  log=%log%
-      echo.  session=%session%
-      echo.  temp=%temp%
-      echo.
-      echo.
-    )
     echo.
   )
-
-  for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\log_thread%%i type %temp%\log_thread%%i
+  echo.
 )>>%log%
+
+if exist "%log%" for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\log_thread%%i type %temp%\log_thread%%i>>%log%
 exit
 
 
