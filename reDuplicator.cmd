@@ -142,6 +142,8 @@ set counter_files_all=0
 if "%counter_files_all%" == "0" ( set operation=0
 ) else set /a operation=%counter_files_scanned%*100/%counter_files_all%
 
+set counter_time_remaining=0
+
 set counter_duplicates=0
 (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j)>nul 2>nul
 
@@ -578,6 +580,30 @@ if exist "%temp%\math_number_%1" for /f "delims=" %%z in (%temp%\math_number_%1)
 set /a math_add_number+=%2
 echo.%math_add_number%>%temp%\math_number_%1
 exit /b
+
+
+
+
+
+:math_format_time
+set math_number_format_s=0
+set math_number_format_m=0
+set math_number_format_h=0
+set math_number_format_d=0
+
+for /f "delims=" %%z in (%temp%\math_number_%1) do (
+  set    math_number_format_s=%%z
+  set /a math_number_format_m=%%z/60
+  set /a math_number_format_h=%%z/60
+  set /a math_number_format_d=%%z/24
+)
+
+(        if "%math_number_format_d%" NEQ "0" ( echo.%math_number_format_TB% days
+  ) else if "%math_number_format_h%" NEQ "0" ( echo.%math_number_format_GB% hours
+  ) else if "%math_number_format_m%" NEQ "0" ( echo.%math_number_format_MB% minutes
+  ) else                                       echo.%math_number_format_s% seconds
+)>%temp%\math_number_format_%1
+exit
 
 
 
