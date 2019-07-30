@@ -166,7 +166,6 @@ if exist %temp%\messages (
     echo.    Duplicates       :^|:  %counter_duplicates%
     echo.    Duplicates size  :^|:  %counter_duplicates_size%
   )
-  echo.
 )
 endlocal
 
@@ -180,6 +179,7 @@ if not exist "%temp%\session_completed" (
 
 
 if exist "%log%" (
+  echo.
   echo.^(i^) All info saved into the log file:
   for /f "delims=" %%i in ("%log%") do echo.      %log%  :^|:  %%~zi bytes
 ) else echo.^(^!^) Any duplicates not found
