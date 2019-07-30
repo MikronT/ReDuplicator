@@ -141,7 +141,6 @@ set counter_files_all=0
 if "%counter_files_all%" == "0" ( set counter_operation=0
 ) else set /a counter_operation=%counter_files_scanned%*100/%counter_files_all%
 
-call :math_set counter_time_remaining 0
 
 set counter_duplicates=0
 (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j)>nul 2>nul
@@ -161,7 +160,7 @@ if "%counter_duplicates%" NEQ "0" (
 if exist %temp%\messages (
   type %temp%\messages
   echo.    Files scanned    :^|:  %counter_files_scanned%/%counter_files_all%
-  if "%counter_files_scanned%"  NEQ "0" echo.    Completed        :^|:  %counter_operation%%%
+  if "%counter_operation%"      NEQ "0" echo.    Completed        :^|:  %counter_operation%%%
   if "%counter_time_remaining%" NEQ "0" echo.    Time remaining   :^|:  %counter_time_remaining%
   if "%counter_duplicates%"     NEQ "0" (
     echo.    Duplicates       :^|:  %counter_duplicates%
