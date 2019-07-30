@@ -598,15 +598,10 @@ for /f "delims=" %%z in (%temp%\math_number_%1) do (
   set /a math_number_format_TB=%%z/1024/1024/1024/1024
 )
 
-(
-  if "%math_number_format_TB%" NEQ "0" (
-    if %math_number_format_TB% LSS %math_number_format_GB% echo.%math_number_format_TB% TB
-  ) else if "%math_number_format_GB%" NEQ "0" (
-    if %math_number_format_GB% LSS %math_number_format_MB% echo.%math_number_format_GB% GB
-  ) else if "%math_number_format_MB%" NEQ "0" (
-    if %math_number_format_MB% LSS %math_number_format_KB% echo.%math_number_format_MB% MB
-  ) else if "%math_number_format_KB%" NEQ "0" (
-    if %math_number_format_KB% LSS %math_number_format_B% echo.%math_number_format_KB% KB
-  ) else echo.%math_number_format_B% bytes
+(        if "%math_number_format_TB%" NEQ "0" ( echo.%math_number_format_TB% TB
+  ) else if "%math_number_format_GB%" NEQ "0" ( echo.%math_number_format_GB% GB
+  ) else if "%math_number_format_MB%" NEQ "0" ( echo.%math_number_format_MB% MB
+  ) else if "%math_number_format_KB%" NEQ "0" ( echo.%math_number_format_KB% KB
+  ) else                                        echo.%math_number_format_B% bytes
 )>%temp%\math_number_format_%1
 exit
