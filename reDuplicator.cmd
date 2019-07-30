@@ -179,6 +179,14 @@ if not exist "%temp%\session_completed" (
 
 
 if exist "%log%" (
+  (
+    echo.Files scanned    :^|:  %counter_files_scanned%/%counter_files_all%
+    if "%counter_duplicates%"    NEQ "0" (
+      echo.Duplicates       :^|:  %counter_duplicates%
+      echo.Duplicates size  :^|:  %counter_duplicates_size%
+    )
+  )>>%log%
+
   echo.
   echo.^(i^) All info saved into the log file:
   for /f "delims=" %%i in ("%log%") do echo.      %log%  :^|:  %%~zi bytes
