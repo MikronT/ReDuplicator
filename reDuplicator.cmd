@@ -141,6 +141,13 @@ set counter_files_all=0
 if "%counter_files_all%" == "0" ( set counter_operation=0
 ) else set /a counter_operation=%counter_files_scanned%*100/%counter_files_all%
 
+call :getTime
+if "%counter_operation%" NEQ "0" (
+  call :math_set counter_time_remaining 0
+
+  start /wait /b "" "%~dpnx0" --call=math_format_time --args=counter_time_remaining
+  (if exist %temp%\math_number_format_counter_time_remaining for /f "delims=" %%i in (%temp%\math_number_format_counter_time_remaining) do set counter_time_remaining=%%i)>nul 2>nul
+)
 
 set counter_duplicates=0
 (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j)>nul 2>nul
@@ -560,7 +567,6 @@ exit /b
 
 
 
-
 :getTime
 if exist "%temp%\time" (
   if exist "%temp%\time_last" del /q "%temp%\time_last"
@@ -576,6 +582,7 @@ for /f "tokens=1 delims=," %%i in ("%time%") do for /f "tokens=1,2,3 delims=:" %
 set /a getTime_time=%getTime_h%*3600+%getTime_m%*60+%getTime_s%
 echo.%getTime_time%>%temp%\time
 exit /b
+
 
 
 
