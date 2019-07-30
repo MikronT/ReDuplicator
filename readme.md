@@ -11,9 +11,9 @@
 [![Status: Release](https://img.shields.io/badge/Status-Release-green.svg?style=for-the-badge)](#)
 -->
 
-### Version name: *Alpha 1*
+### Version name: *Alpha 2*
 
-A console program that searches for file duplicates in the following folder or the drive.
+A console program that searches for file duplicates in the following folder or on the drive.
 
 *Developed for Windows 10 but, in theory, can work on Windows 7, 8 and 8.1 too.*
 
@@ -37,5 +37,6 @@ Version: 0.2, Little Endian, Build: Oct 18 2003 16:31:22
 ## Version History
 | Date       | Version    |
 |------------|------------|
+| 30.07.2019 | Alpha 2    |
 | 20.07.2019 | Alpha 1    |
 | 23.06.2019 | Pre-Alpha  |
