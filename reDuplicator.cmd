@@ -149,7 +149,7 @@ if "%counter_duplicates%" NEQ "0" (
   call :math_set counter_duplicates_size 0
   (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do call :math_add counter_duplicates_size %%j)>nul 2>nul
 
-  start /wait /b "" "%~dpnx0" --call=math_format --args=counter_duplicates_size
+  start /wait /b "" "%~dpnx0" --call=math_format_size --args=counter_duplicates_size
   (if exist %temp%\math_number_format_counter_duplicates_size for /f "delims=" %%i in (%temp%\math_number_format_counter_duplicates_size) do set counter_duplicates_size=%%i)>nul 2>nul
 )
 
@@ -583,7 +583,7 @@ exit /b
 
 
 
-:math_format
+:math_format_size
 set math_number_format_B=0
 set math_number_format_KB=0
 set math_number_format_MB=0
