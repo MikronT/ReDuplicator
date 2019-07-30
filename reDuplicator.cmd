@@ -144,23 +144,36 @@ set counter_files_scanned=0
 (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_files_scanned%%i for /f "delims=" %%j in (%temp%\counter_files_scanned%%i) do set /a counter_files_scanned+=%%j)>nul 2>nul
 set /a counter_files_scanned/=%setting_multithreading%
 
+
 set counter_files_all=0
-(if exist %temp%\counter_files_all for /f "delims=" %%i in (%temp%\counter_files_all) do set /a counter_files_all=%%i)>nul 2>nul
+set counter_operation_last=0
+set counter_operation_last=%counter_operation%
+
+(if exist %temp%\counter_files_all for /f "delims=" %%i in (%temp%\counter_files_all) do set counter_files_all=%%i)>nul 2>nul
 if "%counter_files_all%" == "0" ( set counter_operation=0
 ) else set /a counter_operation=%counter_files_scanned%*100/%counter_files_all%
 
-call :getTime
-if "%counter_operation%" NEQ "0" (
-  %math_set% counter_time_remaining 0
+set /a counter_operation_remaining=100-%counter_operation%
+set /a counter_operation_difference_new=%counter_operation%-%counter_operation_last%
+if "%counter_operation_difference_new%" NEQ "0" set counter_operation_difference=%counter_operation_difference_new%
 
-  rem %math_add% counter_time_remaining ...
+
+call :getTime
+
+if "%counter_operation%" NEQ "0" (
+  %math_set%      counter_time_remaining %getTime_time%
+  %math_subtract% counter_time_remaining %getTime_time_last%
+  %math_multiply% counter_time_remaining %counter_operation_remaining%
+  %math_divide%   counter_time_remaining %counter_operation_difference%
 
   %math_format_time% --args=counter_time_remaining
   (if exist %temp%\math_number_format_counter_time_remaining for /f "delims=" %%i in (%temp%\math_number_format_counter_time_remaining) do set counter_time_remaining=%%i)>nul 2>nul
 )
 
+
 set counter_duplicates=0
 (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j)>nul 2>nul
+
 
 if "%counter_duplicates%" NEQ "0" (
   %math_set% counter_duplicates_size 0
@@ -578,10 +591,8 @@ exit /b
 
 
 :getTime
-if exist "%temp%\time" (
-  if exist "%temp%\time_last" del /q "%temp%\time_last"
-  move /y %temp%\time %temp%\time_last
-)>nul 2>nul
+if "%getTime_time%" == "" ( set getTime_time_last=0
+) else set getTime_time_last=%getTime_time%
 
 for /f "tokens=1 delims=," %%i in ("%time%") do for /f "tokens=1,2,3 delims=:" %%j in ("%%i") do (
   set getTime_h=%%j
@@ -590,7 +601,6 @@ for /f "tokens=1 delims=," %%i in ("%time%") do for /f "tokens=1,2,3 delims=:" %
 )
 
 set /a getTime_time=%getTime_h%*3600+%getTime_m%*60+%getTime_s%
-echo.%getTime_time%>%temp%\time
 exit /b
 
 
@@ -610,7 +620,6 @@ exit /b
 
 
 :math_get
-set math_number=0
 if exist "%temp%\math_number_%1" for /f "delims=" %%z in (%temp%\math_number_%1) do set math_number=%%z
 exit /b
 
