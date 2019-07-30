@@ -26,9 +26,11 @@ set input=set /p command= ^^^>
 set input_clear=set command=
 set logo=call :logo
 set math_add=call :math_add
+set math_divide=call :math_divide
 set math_format_time=start /wait /b "" "%~dpnx0" --call=math_format_time
 set math_format_size=start /wait /b "" "%~dpnx0" --call=math_format_size
 set math_get=call :math_get
+set math_multiply=call :math_multiply
 set math_set=call :math_set
 set math_subtract=call :math_subtract
 set settings_import=call :settings_import
@@ -629,6 +631,26 @@ exit /b
 :math_subtract
 %math_get% %1
 set /a math_number-=%2
+%math_set% %1 %math_number%
+exit /b
+
+
+
+
+
+:math_multiply
+%math_get% %1
+set /a math_number*=%2
+%math_set% %1 %math_number%
+exit /b
+
+
+
+
+
+:math_divide
+%math_get% %1
+set /a math_number/=%2
 %math_set% %1 %math_number%
 exit /b
 
