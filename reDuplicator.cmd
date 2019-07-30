@@ -584,6 +584,18 @@ exit /b
 
 
 
+:math_subtract
+set math_subtract_number=0
+if exist "%temp%\math_number_%1" for /f "delims=" %%z in (%temp%\math_number_%1) do set math_subtract_number=%%z
+
+set /a math_subtract_number-=%2
+echo.%math_subtract_number%>%temp%\math_number_%1
+exit /b
+
+
+
+
+
 :math_format_time
 set math_number_format_s=0
 set math_number_format_m=0
