@@ -26,13 +26,10 @@ set input=set /p command= ^^^>
 set input_clear=set command=
 set logo=call :logo
 set math_add=call :math_add
-set math_divide=call :math_divide
 set math_format_time=start /wait /b "" "%~dpnx0" --call=math_format_time
 set math_format_size=start /wait /b "" "%~dpnx0" --call=math_format_size
 set math_get=call :math_get
-set math_multiply=call :math_multiply
 set math_set=call :math_set
-set math_subtract=call :math_subtract
 set settings_import=call :settings_import
 
 
@@ -146,29 +143,9 @@ set /a counter_files_scanned/=%setting_multithreading%
 
 
 set counter_files_all=0
-set counter_operation_last=0
-set counter_operation_last=%counter_operation%
-
 (if exist %temp%\counter_files_all for /f "delims=" %%i in (%temp%\counter_files_all) do set counter_files_all=%%i)>nul 2>nul
 if "%counter_files_all%" == "0" ( set counter_operation=0
 ) else set /a counter_operation=%counter_files_scanned%*100/%counter_files_all%
-
-set /a counter_operation_remaining=100-%counter_operation%
-set /a counter_operation_difference_new=%counter_operation%-%counter_operation_last%
-if "%counter_operation_difference_new%" NEQ "0" set counter_operation_difference=%counter_operation_difference_new%
-
-
-call :getTime
-
-if "%counter_operation%" NEQ "0" (
-  %math_set%      counter_time_remaining %getTime_time%
-  %math_subtract% counter_time_remaining %getTime_time_last%
-  %math_multiply% counter_time_remaining %counter_operation_remaining%
-  %math_divide%   counter_time_remaining %counter_operation_difference%
-
-  %math_format_time% --args=counter_time_remaining
-  (if exist %temp%\math_number_format_counter_time_remaining for /f "delims=" %%i in (%temp%\math_number_format_counter_time_remaining) do set counter_time_remaining=%%i)>nul 2>nul
-)
 
 
 set counter_duplicates=0
@@ -190,9 +167,8 @@ if "%counter_duplicates%" NEQ "0" (
 if exist %temp%\messages (
   type %temp%\messages
   echo.    Files scanned    :^|:  %counter_files_scanned%/%counter_files_all%
-  if "%counter_operation%"      NEQ "0" echo.    Completed        :^|:  %counter_operation%%%
-  if "%counter_time_remaining%" NEQ "0" echo.    Time remaining   :^|:  %counter_time_remaining%
-  if "%counter_duplicates%"     NEQ "0" (
+  if "%counter_operation%"  NEQ "0" echo.    Completed        :^|:  %counter_operation%%%
+  if "%counter_duplicates%" NEQ "0" (
     echo.    Duplicates       :^|:  %counter_duplicates%
     echo.    Duplicates size  :^|:  %counter_duplicates_size%
   )
@@ -619,47 +595,9 @@ exit /b
 
 
 
-:math_get
-if exist "%temp%\math_number_%1" for /f "delims=" %%z in (%temp%\math_number_%1) do set math_number=%%z
-exit /b
-
-
-
-
-
 :math_add
-%math_get% %1
+if exist "%temp%\math_number_%1" for /f "delims=" %%z in (%temp%\math_number_%1) do set math_number=%%z
 set /a math_number+=%2
-%math_set% %1 %math_number%
-exit /b
-
-
-
-
-
-:math_subtract
-%math_get% %1
-set /a math_number-=%2
-%math_set% %1 %math_number%
-exit /b
-
-
-
-
-
-:math_multiply
-%math_get% %1
-set /a math_number*=%2
-%math_set% %1 %math_number%
-exit /b
-
-
-
-
-
-:math_divide
-%math_get% %1
-set /a math_number/=%2
 %math_set% %1 %math_number%
 exit /b
 
