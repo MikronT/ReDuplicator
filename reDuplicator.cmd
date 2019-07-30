@@ -561,6 +561,26 @@ exit /b
 
 
 
+:getTime
+if exist "%temp%\time" (
+  if exist "%temp%\time_last" del /q "%temp%\time_last"
+  move /y %temp%\time %temp%\time_last
+)>nul 2>nul
+
+for /f "tokens=1 delims=," %%i in ("%time%") do for /f "tokens=1,2,3 delims=:" %%j in ("%%i") do (
+  set getTime_h=%%j
+  set getTime_m=%%k
+  set getTime_s=%%l
+)
+
+set /a getTime_time=%getTime_h%*3600+%getTime_m%*60+%getTime_s%
+echo.%getTime_time%>%temp%\time
+exit /b
+
+
+
+
+
 
 
 
