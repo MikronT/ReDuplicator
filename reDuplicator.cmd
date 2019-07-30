@@ -141,7 +141,7 @@ set counter_files_all=0
 if "%counter_files_all%" == "0" ( set counter_operation=0
 ) else set /a counter_operation=%counter_files_scanned%*100/%counter_files_all%
 
-set counter_time_remaining=0
+call :math_set counter_time_remaining 0
 
 set counter_duplicates=0
 (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j)>nul 2>nul
