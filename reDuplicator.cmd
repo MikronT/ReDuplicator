@@ -155,7 +155,6 @@ if "%counter_duplicates%" NEQ "0" (
 
 
 
-setlocal EnableDelayedExpansion
 %logo%
 
 if exist %temp%\messages (
@@ -167,7 +166,6 @@ if exist %temp%\messages (
     echo.    Duplicates size  :^|:  %counter_duplicates_size%
   )
 )
-endlocal
 
 
 
