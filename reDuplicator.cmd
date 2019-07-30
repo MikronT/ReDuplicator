@@ -25,6 +25,12 @@ set getProcessesCount=call :getProcessesCount
 set input=set /p command= ^^^> 
 set input_clear=set command=
 set logo=call :logo
+set math_add=call :math_add
+set math_format_time=start /wait /b "" "%~dpnx0" --call=math_format_time
+set math_format_size=start /wait /b "" "%~dpnx0" --call=math_format_size
+set math_get=call :math_get
+set math_set=call :math_set
+set math_subtract=call :math_subtract
 set settings_import=call :settings_import
 
 
@@ -143,9 +149,11 @@ if "%counter_files_all%" == "0" ( set counter_operation=0
 
 call :getTime
 if "%counter_operation%" NEQ "0" (
-  call :math_set counter_time_remaining 0
+  %math_set% counter_time_remaining 0
 
-  start /wait /b "" "%~dpnx0" --call=math_format_time --args=counter_time_remaining
+  rem %math_add% counter_time_remaining ...
+
+  %math_format_time% --args=counter_time_remaining
   (if exist %temp%\math_number_format_counter_time_remaining for /f "delims=" %%i in (%temp%\math_number_format_counter_time_remaining) do set counter_time_remaining=%%i)>nul 2>nul
 )
 
@@ -153,10 +161,10 @@ set counter_duplicates=0
 (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j)>nul 2>nul
 
 if "%counter_duplicates%" NEQ "0" (
-  call :math_set counter_duplicates_size 0
-  (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do call :math_add counter_duplicates_size %%j)>nul 2>nul
+  %math_set% counter_duplicates_size 0
+  (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do %math_add% counter_duplicates_size %%j)>nul 2>nul
 
-  start /wait /b "" "%~dpnx0" --call=math_format_size --args=counter_duplicates_size
+  %math_format_size% --args=counter_duplicates_size
   (if exist %temp%\math_number_format_counter_duplicates_size for /f "delims=" %%i in (%temp%\math_number_format_counter_duplicates_size) do set counter_duplicates_size=%%i)>nul 2>nul
 )
 
@@ -599,12 +607,19 @@ exit /b
 
 
 
-:math_add
-set math_add_number=0
-if exist "%temp%\math_number_%1" for /f "delims=" %%z in (%temp%\math_number_%1) do set math_add_number=%%z
+:math_get
+set math_number=0
+if exist "%temp%\math_number_%1" for /f "delims=" %%z in (%temp%\math_number_%1) do set math_number=%%z
+exit /b
 
-set /a math_add_number+=%2
-echo.%math_add_number%>%temp%\math_number_%1
+
+
+
+
+:math_add
+%math_get% %1
+set /a math_number+=%2
+%math_set% %1 %math_number%
 exit /b
 
 
@@ -612,11 +627,9 @@ exit /b
 
 
 :math_subtract
-set math_subtract_number=0
-if exist "%temp%\math_number_%1" for /f "delims=" %%z in (%temp%\math_number_%1) do set math_subtract_number=%%z
-
-set /a math_subtract_number-=%2
-echo.%math_subtract_number%>%temp%\math_number_%1
+%math_get% %1
+set /a math_number-=%2
+%math_set% %1 %math_number%
 exit /b
 
 
