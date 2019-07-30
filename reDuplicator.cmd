@@ -102,7 +102,8 @@ echo.
 echo.^(i^) Main Menu
 echo.
 echo.    ^(1^) Run scan
-echo.    ^(2^) Settings
+echo.    ^(2^) Open logs folder
+echo.    ^(3^) Settings
 echo.
 echo.
 echo.
@@ -114,7 +115,8 @@ if "%command%" == "1" (
   start %debugModifier_b% "" "%~dpnx0" --call=scan_controller
   call :screen_scan
 )
-if "%command%" == "2" call :screen_settings
+if "%command%" == "2" start explorer "%~dp0logs"
+if "%command%" == "3" call :screen_settings
 
 
 
