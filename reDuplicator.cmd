@@ -161,8 +161,8 @@ setlocal EnableDelayedExpansion
 if exist %temp%\messages (
   type %temp%\messages
   echo.    Files scanned    :^|:  %counter_files_scanned%/%counter_files_all%
-  echo.    Completed        :^|:  %operation% %%
-  if "%counter_duplicates%" NEQ "0" (
+  if "%counter_files_scanned%" NEQ "0" echo.    Completed        :^|:  %operation%%%
+  if "%counter_duplicates%"    NEQ "0" (
     echo.    Duplicates       :^|:  %counter_duplicates%
     echo.    Duplicates size  :^|:  %counter_duplicates_size%
   )
