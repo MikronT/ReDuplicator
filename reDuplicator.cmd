@@ -513,7 +513,7 @@ if "%command%" == "4" if "%setting_debug%" == "true" ( set setting_debug=false
   echo.filter_include=%setting_filter_include%
   echo.filter_exclude=%setting_filter_exclude%
   echo.multithreading=%setting_multithreading%i
-)>>%settings%
+)>%settings%
 
 endlocal
 goto :screen_settings
