@@ -397,8 +397,8 @@ exit
 
 
 :log_controller
-  for /f "delims=" %%i in ('dir /a:-d /b "%temp%\log_thread*" ^| find /i /c "log_thread"') do if "%%i" NEQ "0" (
-  echo.ReDuplicator Log File ^| %currentDate%
+(for /f "delims=" %%i in ('dir /a:-d /b "%temp%\log_thread*" ^| find /i /c "log_thread"') do if "%%i" NEQ "0" (
+  echo.%app_name% Log File ^| %currentDate%
   echo.
   echo.
   if "%setting_debug%" == "true" (
@@ -415,7 +415,7 @@ exit
     echo.
   )
   echo.
-)>>%log%
+))>>%log% 2>nul
 
 if exist "%log%" for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\log_thread%%i type %temp%\log_thread%%i>>%log%
 exit
@@ -490,7 +490,7 @@ if "%command%" == "4" if "%setting_debug%" == "true" ( set setting_debug=false
 
 
 (
-  echo.# ReDuplicator Settings #
+  echo.# %app_name% Settings #
   echo.
   echo.debug=%setting_debug%
   echo.filter_include=%setting_filter_include%
