@@ -88,7 +88,11 @@ set log_debug=%log_name%_debug
 set counter_log=0
 
 if exist "%log%.txt" ( call :cycle_log_name
-) else if exist "%log_debug%.txt" call :cycle_log_name
+) else if exist "%log_debug%.txt" ( call :cycle_log_name
+) else (
+  set log=%log_name%.txt
+  set log_debug=%log_name%_debug.txt
+)
 
 
 
@@ -424,7 +428,7 @@ exit
     echo.
   )
   echo.
-))>>%log% 2>nul
+))>>%log% 2>>%log_debug%
 
 if exist "%log%" for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\log_thread%%i type %temp%\log_thread%%i>>%log%
 exit
