@@ -94,6 +94,8 @@ if exist "%log%.txt" ( call :cycle_log_name
   set log_debug=%log_name%_debug.txt
 )
 
+if "%setting_debug%" == "false" set log_debug=nul
+
 
 
 %input_clear%
@@ -146,26 +148,26 @@ goto :screen_main
 
 :screen_scan
 set counter_files_scanned=0
-(for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_files_scanned%%i for /f "delims=" %%j in (%temp%\counter_files_scanned%%i) do set /a counter_files_scanned+=%%j)>nul 2>nul
+(for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_files_scanned%%i for /f "delims=" %%j in (%temp%\counter_files_scanned%%i) do set /a counter_files_scanned+=%%j)>nul 2>>%log_debug%
 set /a counter_files_scanned/=%setting_multithreading%
 
 
 set counter_files_all=0
-(if exist %temp%\counter_files_all for /f "delims=" %%i in (%temp%\counter_files_all) do set counter_files_all=%%i)>nul 2>nul
+(if exist %temp%\counter_files_all for /f "delims=" %%i in (%temp%\counter_files_all) do set counter_files_all=%%i)>nul 2>>%log_debug%
 if "%counter_files_all%" == "0" ( set counter_operation=0
 ) else set /a counter_operation=%counter_files_scanned%*100/%counter_files_all%
 
 
 set counter_duplicates=0
-(for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j)>nul 2>nul
+(for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates%%i for /f "delims=" %%j in (%temp%\counter_duplicates%%i) do set /a counter_duplicates+=%%j)>nul 2>>%log_debug%
 
 
 if "%counter_duplicates%" NEQ "0" (
   %math_set% counter_duplicates_size 0
-  (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do %math_add% counter_duplicates_size %%j)>nul 2>nul
+  (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do %math_add% counter_duplicates_size %%j)>nul 2>>%log_debug%
 
   %math_format_size% --args=counter_duplicates_size
-  (if exist %temp%\math_number_format_counter_duplicates_size for /f "delims=" %%i in (%temp%\math_number_format_counter_duplicates_size) do set counter_duplicates_size=%%i)>nul 2>nul
+  (if exist %temp%\math_number_format_counter_duplicates_size for /f "delims=" %%i in (%temp%\math_number_format_counter_duplicates_size) do set counter_duplicates_size=%%i)>nul 2>>%log_debug%
 )
 
 
@@ -429,6 +431,8 @@ exit
   )
   echo.
 ))>>%log% 2>>%log_debug%
+
+for %%i in (%log% %log_debug%) do for /f "delims=" %%j in ("%%i") do if "%%~zj" == "0" del /q "%%i"
 
 if exist "%log%" for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\log_thread%%i type %temp%\log_thread%%i>>%log%
 exit
