@@ -7,7 +7,7 @@ cd "%~dp0"
 
 
 set app_name=ReDuplicator
-set app_version=Alpha 2
+set app_version=Beta 1
 
 set title_main=[MikronT] %app_name% %app_version%
 set title_scan=%app_name%   Session: %session%   Thread
