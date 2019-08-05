@@ -82,9 +82,13 @@ for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%
 if not exist logs md logs
 if not exist %temp% md %temp%
 
-set log=logs\reDuplicator_%currentDate%_%session%.txt
+set log_name=logs\reDuplicator_%currentDate%_%session%
+set log=%log_name%
+set log_debug=%log_name%_debug
 set counter_log=0
-if exist "%log%" call :cycle_log_name
+
+if exist "%log%.txt" ( call :cycle_log_name
+) else if exist "%log_debug%.txt" call :cycle_log_name
 
 
 
@@ -271,8 +275,13 @@ exit
 
 :cycle_log_name
 set /a counter_log+=1
-set log=logs\reDuplicator_%currentDate%_%session%_%counter_log%.txt
-if exist "%log%" goto :cycle_log_name
+
+if exist "%log%_%counter_log%"       goto :cycle_log_name
+if exist "%log_debug%_%counter_log%" goto :cycle_log_name
+
+set log=%log%_%counter_log%.txt
+set log_debug=%log_debug%_%counter_log%.txt
+exit /b
 
 
 
