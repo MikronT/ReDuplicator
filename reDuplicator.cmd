@@ -597,7 +597,9 @@ goto :screen_settings
 
 
 :logo
-if "%*" == "" ( title %title_main% ^| Session: %session% ^| %directory%
+if "%*" == "" (
+  title %title_main% ^| Session: %session% ^| %directory%
+  mode con:cols=110 lines=30
 ) else title %*
 color 0b
 cls
