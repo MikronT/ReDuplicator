@@ -108,10 +108,15 @@ echo.
 echo.^(i^) Program directory: "%cd%"
 if exist "%directory%" ( echo.^(i^) Work directory:    "%directory%"
 ) else (
-  color 0c
-  echo.^(^!^) Directory not found: "%directory%"
-  echo.^(i^) Use Drag^&Drop: drag the directory onto the %~nx0 file
-  pause>nul
+  echo.^(^^!^) Directory not found: "%directory%"
+  echo.^(i^) Use Drag^&Drop: drag the directory onto the %~nx0 file or into this window
+  echo.
+  echo.
+  echo.
+  setlocal EnableDelayedExpansion
+  %input%
+  "%~dpnx0" !command!
+  endlocal
   exit
 )
 echo.
