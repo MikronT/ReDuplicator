@@ -55,7 +55,12 @@ if "%key_call%" NEQ "" call :%key_call% %key_args%
 
 
 %getProcessesCount% %title_main%*
-if "%counter_processes%" == "2" exit
+set counter_processes_main=%counter_processes%
+
+%getProcessesCount% %title_main%   Reboot Menu*
+set /a counter_processes_main-=%counter_processes%
+
+if %counter_processes_main% GEQ 2 exit
 
 
 
@@ -128,10 +133,14 @@ set command=%command:"=%
 
 
 
-if "%command%" == "1" (
-  start %debugModifier_b% "" "%~dpnx0" --call=scan_controller
-  start "" "%~dpnx0" --call=screen_reboot
-  call :screen_scan
+if exist "%directory%" (
+  if "%command%" == "1" (
+    start %debugModifier_b% "" "%~dpnx0" --call=scan_controller
+    start "" "%~dpnx0" --call=screen_reboot
+    call :screen_scan
+  )
+  if "%command%" == "2" start explorer "%~dp0logs"
+  if "%command%" == "3" call :screen_settings
 )
 if "%command%" == "2" start explorer "%~dp0logs"
 if "%command%" == "3" call :screen_settings
@@ -272,7 +281,7 @@ if "%counter_processes%" NEQ "0" goto :cycle_scanWait
 start /wait %debugModifier_b% "" "%~dpnx0" --call=log_controller
 
 echo.>%temp%\return_sessionCompleted
-taskkill /f /im cmd.exe /fi "WINDOWTITLE eq %title_main%   Reboot Menu"
+taskkill /f /im cmd.exe /fi "WINDOWTITLE eq %title_main%   Reboot Menu   Session: %session%"
 exit
 
 
@@ -448,10 +457,10 @@ exit
 
 
 :screen_reboot
-mode con:cols=60 lines=30
+mode con:cols=50 lines=30
 
 %input_clear%
-%logo% %title_main%   Reboot Menu
+%logo% %title_main%   Reboot Menu   Session: %session%
 
 echo.^(i^) Reboot Menu
 echo.
