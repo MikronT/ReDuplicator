@@ -253,8 +253,6 @@ echo.>>%temp%\messages
 
 
 echo.^(i^) Starting file comparing threads...>>%temp%\messages
-
-rem echo.>%temp%\duplicates
 for /l %%i in (1, 1, %setting_multithreading%) do start %debugModifier_min% "" "%~dpnx0" --call=scan --args=%%i
 timeout /nobreak /t 2 >nul
 
@@ -270,6 +268,7 @@ if "%counter_processes%" NEQ "0" goto :cycle_scanWait
 start /wait %debugModifier_b% "" "%~dpnx0" --call=log_controller
 
 echo.>%temp%\return_sessionCompleted
+taskkill /f /im cmd.exe /fi "WINDOWTITLE eq %title_main%   Reboot Menu"
 exit
 
 
@@ -448,7 +447,7 @@ exit
 mode con:cols=60 lines=30
 
 %input_clear%
-%logo%
+%logo% %title_main%   Reboot Menu
 
 echo.^(i^) Reboot Menu
 echo.
