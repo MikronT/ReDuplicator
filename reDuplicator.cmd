@@ -126,6 +126,8 @@ if exist "%directory%" (
   echo.^(i^) Use Drag^&Drop: drag the directory into this window or onto the %~nx0 file
 )
 echo.
+echo.    ^(0^) Exit
+echo.
 echo.
 echo.
 %input%
@@ -144,6 +146,7 @@ if exist "%directory%" (
   if "%command%" == "2" start explorer "%~dp0logs"
   if "%command%" == "3" call :screen_settings
 )
+if "%command%" == "0" exit
 
 if exist "%command%" set directory=%command%
 
