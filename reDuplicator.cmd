@@ -244,7 +244,7 @@ set counter_thread=1
 set counter_dataLines_min=0
 set counter_dataLines=0
 set counter_dataLines_max=%multithreading_linesPerThread%
-call :cycle_multithread_initializing
+call :multithread_initializing
 
 echo.    Initialized: %setting_multithreading% threads>>%temp%\messages
 echo.>>%temp%\messages
@@ -297,25 +297,7 @@ exit /b
 
 
 
-:cycle_multithread_initializing
-call :multithread_data_writing
-
-if "%counter_thread%" == "%setting_multithreading%" exit /b
-
-set /a counter_thread+=1
-set /a counter_dataLines_min+=%multithreading_linesPerThread%
-set /a counter_dataLines_max+=%multithreading_linesPerThread%
-goto :cycle_multithread_initializing
-
-
-
-
-
-
-
-
-
-:multithread_data_writing
+:multithread_initializing
 setlocal EnableDelayedExpansion
 for /f "delims=" %%i in (%temp%\data) do (
   set /a counter_dataLines+=1
@@ -323,7 +305,13 @@ for /f "delims=" %%i in (%temp%\data) do (
   if "!counter_dataLines!" == "%counter_dataLines_max%" exit /b
 )
 endlocal
-exit /b
+
+if "%counter_thread%" == "%setting_multithreading%" exit /b
+
+set /a counter_thread+=1
+set /a counter_dataLines_min+=%multithreading_linesPerThread%
+set /a counter_dataLines_max+=%multithreading_linesPerThread%
+goto :multithread_initializing
 
 
 
