@@ -42,9 +42,11 @@ set argument=%1
 set argument=%argument:"=%
 
 if exist "%argument%" ( set directory=%argument%
-) else for /f "tokens=1,* delims=- " %%i in ("%*") do (
-  if "%%i" NEQ "" set key_%%i
-  if "%%j" NEQ "" set key_%%j
+) else (
+  for /f "tokens=1,* delims=- " %%i in ("%*") do (
+    if "%%i" NEQ "" set key_%%i
+    if "%%j" NEQ "" set key_%%j
+  )
 )
 
 if exist "%directory%" (
