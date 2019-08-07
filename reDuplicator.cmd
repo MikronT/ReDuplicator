@@ -128,6 +128,7 @@ echo.
 
 if "%command%" == "1" (
   start %debugModifier_b% "" "%~dpnx0" --call=scan_controller
+  start "" "%~dpnx0" --call=screen_reboot
   call :screen_scan
 )
 if "%command%" == "2" start explorer "%~dp0logs"
@@ -213,6 +214,55 @@ echo.
 echo.^(i^) Press Enter to go to the main menu
 pause>nul
 exit /b
+
+
+
+
+
+
+
+
+
+:screen_reboot
+mode con:cols=60 lines=30
+
+%input_clear%
+%logo%
+
+echo.^(i^) Reboot Menu
+echo.
+echo.^(i^) Shutdown: not planned
+echo.
+echo.^(^?^) Do you want to plan your computer's shutdown^?
+echo.    ^(1^) Shutdown immediatery
+echo.    ^(2^) Shutdown in 10m
+echo.    ^(3^) Shutdown in 30m
+echo.    ^(4^) Enter custom interval
+echo.
+echo.    ^(5^) Cancel shutdown
+echo.
+echo.
+echo.
+%input%
+
+
+
+if "%command%" == "1" set return_shutdown=0
+if "%command%" == "2" set return_shutdown=600
+if "%command%" == "3" set return_shutdown=1800
+if "%command%" == "4" (
+  set /p return_shutdown=^(^>^) Enter a valid number in hours ^(up to 24^) ^> 
+  if "%return_shutdown%" NEQ "" if %return_shutdown% GEQ 0 if %return_shutdown% LEQ 24 set /a return_shutdown*=3600
+)
+if "%command%" == "5" set return_shutdown=-1
+
+
+
+if exist "%temp%\return_sessionCompleted" if "%return_shutdown%" NEQ "-1" (
+  timeout /nobreak /t 5 >nul
+  shutdown /s /t %return_shutdown%
+) else shutdown /a
+goto :screen_reboot
 
 
 
