@@ -11,7 +11,7 @@
 [![Status: Release](https://img.shields.io/badge/Status-Release-green.svg?style=for-the-badge)](#)
 -->
 
-### Version name: *Beta 1*
+### Version name: *Beta 2*
 
 A console program that searches for file duplicates in the following folder or on the drive.
 
@@ -41,6 +41,7 @@ Version: 0.2, Little Endian, Build: Oct 18 2003 16:31:22
 ## Version History
 | Date       | Version    |
 |------------|------------|
+| 07.08.2019 | Beta 2     |
 | 05.08.2019 | Beta 1     |
 | 30.07.2019 | Alpha 2    |
 | 20.07.2019 | Alpha 1    |
