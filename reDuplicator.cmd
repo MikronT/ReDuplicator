@@ -49,12 +49,6 @@ if exist "%argument%" ( set directory=%argument%
   )
 )
 
-if exist "%directory%" (
-  if not exist temp md temp
-  echo.%directory%>temp\directory
-  for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
-)
-
 if "%key_call%" == "scan" %logo% %title_scan% %key_args%
 if "%key_call%" NEQ "" call :%key_call% %key_args%
 
@@ -72,6 +66,12 @@ if "%counter_processes%" == "2" exit
 
 
 :screen_main
+if exist "%directory%" (
+  if not exist temp md temp
+  echo.%directory%>temp\directory
+  for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
+)
+
 :cycle_sessionSet
 set session=%random%%random%
 set temp=temp\session-%session%
@@ -106,30 +106,25 @@ if "%setting_debug%" == "false" set log_debug=nul
 echo.^(i^) Session: %session%
 echo.
 echo.^(i^) Program directory: "%cd%"
-if exist "%directory%" ( echo.^(i^) Work directory:    "%directory%"
+if exist "%directory%" (
+  echo.^(i^) Work directory:    "%directory%"
+  echo.
+  echo.
+  echo.^(i^) Main Menu
+  echo.
+  echo.    ^(1^) Run scan
+  echo.    ^(2^) Open logs folder
+  echo.    ^(3^) Settings
 ) else (
-  echo.^(^^!^) Directory not found: "%directory%"
-  echo.^(i^) Use Drag^&Drop: drag the directory onto the %~nx0 file or into this window
-  echo.
-  echo.
-  echo.
-  setlocal EnableDelayedExpansion
-  %input%
-  "%~dpnx0" !command!
-  endlocal
-  exit
+  if "%setting_debug%" == "true" ( echo.^(^!^) Directory not found: "%directory%"
+  ) else echo.^(^!^) Directory not found^!
+  echo.^(i^) Use Drag^&Drop: drag the directory into this window or onto the %~nx0 file
 )
-echo.
-echo.
-echo.^(i^) Main Menu
-echo.
-echo.    ^(1^) Run scan
-echo.    ^(2^) Open logs folder
-echo.    ^(3^) Settings
 echo.
 echo.
 echo.
 %input%
+set command=%command:"=%
 
 
 
@@ -140,6 +135,8 @@ if "%command%" == "1" (
 )
 if "%command%" == "2" start explorer "%~dp0logs"
 if "%command%" == "3" call :screen_settings
+
+if exist "%command%" set directory=%command%
 
 
 
