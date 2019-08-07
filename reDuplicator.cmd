@@ -152,12 +152,12 @@ if exist "%command%" set directory=%command%
 
 
 
-if exist %temp% rd /s /q %temp%
-
 if exist "%temp%\return_sessionCompleted" if exist "%temp%\return_shutdown" for /f "delims=" %%i in ('type "%temp%\return_shutdown"') do if "%%i" NEQ "-1" (
   timeout /nobreak /t 5 >nul
   shutdown /s /t %%i
 ) else shutdown /a
+
+if exist %temp% rd /s /q %temp%
 goto :screen_main
 
 
@@ -289,7 +289,7 @@ if "%counter_processes%" NEQ "0" goto :cycle_scanWait
 start /wait %debugModifier_b% "" "%~dpnx0" --call=log_controller
 
 echo.>%temp%\return_sessionCompleted
-taskkill /f /im cmd.exe /fi "WINDOWTITLE eq %title_main%   Shutdown   Session: %session%"
+taskkill /f /im cmd.exe /fi "WINDOWTITLE eq %title_main%   Shutdown   Session: %session%">nul
 exit
 
 
