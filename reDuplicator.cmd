@@ -131,7 +131,7 @@ echo.
 echo.
 echo.
 %input%
-set command=%command:"=%
+if "%command%" NEQ "" set command=%command:"=%
 
 
 
