@@ -348,13 +348,7 @@ exit /b
 
 
 :multithread_initializing
-setlocal EnableDelayedExpansion
-for /f "delims=" %%i in (%temp%\data) do (
-  set /a counter_dataLines+=1
-  if !counter_dataLines! GTR %counter_dataLines_min% echo.%%i>>%temp%\data_thread%counter_thread%
-  if "!counter_dataLines!" == "%counter_dataLines_max%" exit /b
-)
-endlocal
+call :multithread_dataWriting
 
 if "%counter_thread%" == "%setting_multithreading%" exit /b
 
@@ -363,6 +357,20 @@ set /a counter_dataLines_min+=%multithreading_linesPerThread%
 set /a counter_dataLines_max+=%multithreading_linesPerThread%
 goto :multithread_initializing
 
+
+
+
+
+
+:multithread_dataWriting
+setlocal EnableDelayedExpansion
+for /f "delims=" %%i in (%temp%\data) do (
+  set /a counter_dataLines+=1
+  if !counter_dataLines! GTR %counter_dataLines_min% echo.%%i>>%temp%\data_thread%counter_thread%
+  if "!counter_dataLines!" == "%counter_dataLines_max%" exit /b
+)
+endlocal
+exit /b
 
 
 
