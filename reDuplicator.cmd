@@ -585,23 +585,6 @@ exit /b
 
 
 
-:getTime
-if "%getTime_time%" == "" ( set getTime_time_last=0
-) else set getTime_time_last=%getTime_time%
-
-for /f "tokens=1 delims=," %%i in ("%time%") do for /f "tokens=1,2,3 delims=:" %%j in ("%%i") do (
-  set getTime_h=%%j
-  set getTime_m=%%k
-  set getTime_s=%%l
-)
-
-set /a getTime_time=%getTime_h%*3600+%getTime_m%*60+%getTime_s%
-exit /b
-
-
-
-
-
 
 
 
