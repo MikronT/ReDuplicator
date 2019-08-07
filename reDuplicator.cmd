@@ -233,7 +233,7 @@ echo.
 echo.
 echo.
 echo.^(i^) Press Enter to go to the main menu
-pause>nul
+timeout /t 20 >nul
 exit /b
 
 
@@ -471,8 +471,6 @@ mode con:cols=50 lines=30
 %input_clear%
 %logo% %title_main%   Shutdown   Session: %session%
 
-echo.^(i^) Shutdown
-echo.
 if "%shutdown%" == "-1" ( echo.^(i^) Shutdown: not planned
 ) else if "%shutdown%" == "0" ( echo.^(i^) Shutdown: immediatery
 ) else if "%shutdown%" == "600" ( echo.^(i^) Shutdown: in 10m
