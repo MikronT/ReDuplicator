@@ -136,20 +136,25 @@ set command=%command:"=%
 if exist "%directory%" (
   if "%command%" == "1" (
     start %debugModifier_b% "" "%~dpnx0" --call=scan_controller
+    set shutdown=-1
+    set shutdown_hours=0
     start "" "%~dpnx0" --call=screen_reboot
     call :screen_scan
   )
   if "%command%" == "2" start explorer "%~dp0logs"
   if "%command%" == "3" call :screen_settings
 )
-if "%command%" == "2" start explorer "%~dp0logs"
-if "%command%" == "3" call :screen_settings
 
 if exist "%command%" set directory=%command%
 
 
 
 if exist %temp% rd /s /q %temp%
+
+if exist "%temp%\return_sessionCompleted" if exist "%temp%\return_shutdown" for /f "delims=" %%i in ('type "%temp%\return_shutdown"') do if "%%i" NEQ "-1" (
+  timeout /nobreak /t 5 >nul
+  shutdown /s /t %%i
+) else shutdown /a
 goto :screen_main
 
 
@@ -457,6 +462,7 @@ exit
 
 
 :screen_reboot
+setlocal EnableDelayedExpansion
 mode con:cols=50 lines=30
 
 %input_clear%
@@ -464,7 +470,11 @@ mode con:cols=50 lines=30
 
 echo.^(i^) Reboot Menu
 echo.
-echo.^(i^) Shutdown: not planned
+if "%shutdown%" == "-1" ( echo.^(i^) Shutdown: not planned
+) else if "%shutdown%" == "0" ( echo.^(i^) Shutdown: immediatery
+) else if "%shutdown%" == "600" ( echo.^(i^) Shutdown: in 10m
+) else if "%shutdown%" == "1800" ( echo.^(i^) Shutdown: in 30m
+) else echo.^(i^) Shutdown: in %shutdown_hours%h
 echo.
 echo.^(^?^) Do you want to plan your computer's shutdown^?
 echo.    ^(1^) Shutdown immediatery
@@ -480,21 +490,18 @@ echo.
 
 
 
-if "%command%" == "1" set return_shutdown=0
-if "%command%" == "2" set return_shutdown=600
-if "%command%" == "3" set return_shutdown=1800
+if "%command%" == "1" set shutdown=0
+if "%command%" == "2" set shutdown=600
+if "%command%" == "3" set shutdown=1800
 if "%command%" == "4" (
-  set /p return_shutdown=^(^>^) Enter a valid number in hours ^(up to 24^) ^> 
-  if "%return_shutdown%" NEQ "" if %return_shutdown% GEQ 0 if %return_shutdown% LEQ 24 set /a return_shutdown*=3600
+  set /p shutdown_hours=^(^>^) Enter a valid number in hours ^(up to 24^) ^> 
+  if "!shutdown_hours!" NEQ "" if !shutdown_hours! GEQ 0 if !shutdown_hours! LEQ 24 set /a shutdown=!shutdown_hours!*3600
 )
-if "%command%" == "5" set return_shutdown=-1
+if "%command%" == "5" set shutdown=-1
 
 
 
-if exist "%temp%\return_sessionCompleted" if "%return_shutdown%" NEQ "-1" (
-  timeout /nobreak /t 5 >nul
-  shutdown /s /t %return_shutdown%
-) else shutdown /a
+echo.%shutdown%>%temp%\return_shutdown
 goto :screen_reboot
 
 
