@@ -186,7 +186,7 @@ if exist %temp%\messages (
 
 
 
-if not exist "%temp%\session_completed" (
+if not exist "%temp%\return_sessionCompleted" (
   timeout /t 3 >nul
   goto :screen_scan
 )
@@ -268,7 +268,7 @@ if "%counter_processes%" NEQ "0" goto :cycle_scanWait
 
 start /wait %debugModifier_b% "" "%~dpnx0" --call=log_controller
 
-echo.>%temp%\session_completed
+echo.>%temp%\return_sessionCompleted
 exit
 
 
