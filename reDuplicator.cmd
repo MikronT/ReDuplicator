@@ -188,7 +188,7 @@ if exist %temp%\messages (
 
 
 if not exist "%temp%\return_sessionCompleted" (
-  timeout /t 3 >nul
+  timeout /t 5 >nul
   goto :screen_scan
 )
 
@@ -214,55 +214,6 @@ echo.
 echo.^(i^) Press Enter to go to the main menu
 pause>nul
 exit /b
-
-
-
-
-
-
-
-
-
-:screen_reboot
-mode con:cols=60 lines=30
-
-%input_clear%
-%logo%
-
-echo.^(i^) Reboot Menu
-echo.
-echo.^(i^) Shutdown: not planned
-echo.
-echo.^(^?^) Do you want to plan your computer's shutdown^?
-echo.    ^(1^) Shutdown immediatery
-echo.    ^(2^) Shutdown in 10m
-echo.    ^(3^) Shutdown in 30m
-echo.    ^(4^) Enter custom interval
-echo.
-echo.    ^(5^) Cancel shutdown
-echo.
-echo.
-echo.
-%input%
-
-
-
-if "%command%" == "1" set return_shutdown=0
-if "%command%" == "2" set return_shutdown=600
-if "%command%" == "3" set return_shutdown=1800
-if "%command%" == "4" (
-  set /p return_shutdown=^(^>^) Enter a valid number in hours ^(up to 24^) ^> 
-  if "%return_shutdown%" NEQ "" if %return_shutdown% GEQ 0 if %return_shutdown% LEQ 24 set /a return_shutdown*=3600
-)
-if "%command%" == "5" set return_shutdown=-1
-
-
-
-if exist "%temp%\return_sessionCompleted" if "%return_shutdown%" NEQ "-1" (
-  timeout /nobreak /t 5 >nul
-  shutdown /s /t %return_shutdown%
-) else shutdown /a
-goto :screen_reboot
 
 
 
@@ -303,14 +254,14 @@ echo.>>%temp%\messages
 
 echo.^(i^) Starting file comparing threads...>>%temp%\messages
 
-echo.>%temp%\duplicates
+rem echo.>%temp%\duplicates
 for /l %%i in (1, 1, %setting_multithreading%) do start %debugModifier_min% "" "%~dpnx0" --call=scan --args=%%i
 timeout /nobreak /t 2 >nul
 
 
 
 :cycle_scanWait
-timeout /nobreak /t 1 >nul
+timeout /nobreak /t 5 >nul
 %getProcessesCount% %title_scan%*
 if "%counter_processes%" NEQ "0" goto :cycle_scanWait
 
@@ -361,7 +312,6 @@ goto :multithread_initializing
 
 
 
-
 :multithread_dataWriting
 setlocal EnableDelayedExpansion
 for /f "delims=" %%i in (%temp%\data) do (
@@ -371,6 +321,7 @@ for /f "delims=" %%i in (%temp%\data) do (
 )
 endlocal
 exit /b
+
 
 
 
@@ -484,6 +435,55 @@ for %%i in (%log% %log_debug%) do for /f "delims=" %%j in ("%%i") do if "%%~zj" 
 
 if exist "%log%" for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\log_thread%%i type %temp%\log_thread%%i>>%log%
 exit
+
+
+
+
+
+
+
+
+
+:screen_reboot
+mode con:cols=60 lines=30
+
+%input_clear%
+%logo%
+
+echo.^(i^) Reboot Menu
+echo.
+echo.^(i^) Shutdown: not planned
+echo.
+echo.^(^?^) Do you want to plan your computer's shutdown^?
+echo.    ^(1^) Shutdown immediatery
+echo.    ^(2^) Shutdown in 10m
+echo.    ^(3^) Shutdown in 30m
+echo.    ^(4^) Enter custom interval
+echo.
+echo.    ^(5^) Cancel shutdown
+echo.
+echo.
+echo.
+%input%
+
+
+
+if "%command%" == "1" set return_shutdown=0
+if "%command%" == "2" set return_shutdown=600
+if "%command%" == "3" set return_shutdown=1800
+if "%command%" == "4" (
+  set /p return_shutdown=^(^>^) Enter a valid number in hours ^(up to 24^) ^> 
+  if "%return_shutdown%" NEQ "" if %return_shutdown% GEQ 0 if %return_shutdown% LEQ 24 set /a return_shutdown*=3600
+)
+if "%command%" == "5" set return_shutdown=-1
+
+
+
+if exist "%temp%\return_sessionCompleted" if "%return_shutdown%" NEQ "-1" (
+  timeout /nobreak /t 5 >nul
+  shutdown /s /t %return_shutdown%
+) else shutdown /a
+goto :screen_reboot
 
 
 
