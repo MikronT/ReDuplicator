@@ -57,7 +57,7 @@ if "%key_call%" NEQ "" call :%key_call% %key_args%
 %getProcessesCount% %title_main%*
 set counter_processes_main=%counter_processes%
 
-%getProcessesCount% %title_main%   Reboot Menu*
+%getProcessesCount% %title_main%   Shutdown*
 set /a counter_processes_main-=%counter_processes%
 
 if %counter_processes_main% GEQ 2 exit
@@ -140,7 +140,7 @@ if exist "%directory%" (
     start %debugModifier_b% "" "%~dpnx0" --call=scan_controller
     set shutdown=-1
     set shutdown_hours=0
-    start "" "%~dpnx0" --call=screen_reboot
+    start "" "%~dpnx0" --call=screen_shutdown
     call :screen_scan
   )
   if "%command%" == "2" start explorer "%~dp0logs"
@@ -289,7 +289,7 @@ if "%counter_processes%" NEQ "0" goto :cycle_scanWait
 start /wait %debugModifier_b% "" "%~dpnx0" --call=log_controller
 
 echo.>%temp%\return_sessionCompleted
-taskkill /f /im cmd.exe /fi "WINDOWTITLE eq %title_main%   Reboot Menu   Session: %session%"
+taskkill /f /im cmd.exe /fi "WINDOWTITLE eq %title_main%   Shutdown   Session: %session%"
 exit
 
 
@@ -464,14 +464,14 @@ exit
 
 
 
-:screen_reboot
+:screen_shutdown
 setlocal EnableDelayedExpansion
 mode con:cols=50 lines=30
 
 %input_clear%
-%logo% %title_main%   Reboot Menu   Session: %session%
+%logo% %title_main%   Shutdown   Session: %session%
 
-echo.^(i^) Reboot Menu
+echo.^(i^) Shutdown
 echo.
 if "%shutdown%" == "-1" ( echo.^(i^) Shutdown: not planned
 ) else if "%shutdown%" == "0" ( echo.^(i^) Shutdown: immediatery
@@ -505,7 +505,7 @@ if "%command%" == "5" set shutdown=-1
 
 
 echo.%shutdown%>%temp%\return_shutdown
-goto :screen_reboot
+goto :screen_shutdown
 
 
 
