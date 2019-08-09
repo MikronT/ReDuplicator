@@ -86,10 +86,10 @@ if exist "%directory%" (
   for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
 )
 
-:cycle_sessionSet
+:cycle_session
 set session=%random%%random%
 set temp=temp\session-%session%
-if exist "%temp%" goto :cycle_sessionSet
+if exist "%temp%" goto :cycle_session
 
 set currentDate=%date%
 for /f "tokens=2 delims= " %%i in ("%currentDate%") do set currentDate=%%i
