@@ -605,7 +605,7 @@ echo.
 echo.
 echo.    [MikronT] ==^> %app_name%
 echo.                  %app_version%
-echo.   ============================
+echo.   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 echo.     See other here:
 echo.         github.com/MikronT
 echo.
