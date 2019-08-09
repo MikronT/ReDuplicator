@@ -23,6 +23,8 @@ set setting_multithreading=2
 
 set settings=settings.ini
 
+
+
 set module_powershell=start /min powershell.exe
 set module_rehash=modules\rehash.exe -norecur -none
 
@@ -38,6 +40,8 @@ set notiffication=call :notiffication
 set settings_import=call :settings_import
 
 
+
+%module_powershell% "Exit"
 
 %settings_import%
 
