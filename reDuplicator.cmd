@@ -10,8 +10,8 @@ if not exist temp md temp
 
 set app_name=ReDuplicator
 set app_name_ns=reDuplicator
-set app_version_code=1.0.0.2.2.0
-set app_version_name=v1.0 Beta 2
+set app_version_code=1.0.0.3.1.0
+set app_version_name=v1.0 Pre-Release 1
 
 set title_main=[MikronT] %app_name% %app_version_name%
 set title_scan=%app_name%   Session: %session%   Thread
@@ -636,7 +636,7 @@ echo.
 echo.
 echo.    [MikronT] ==^> %app_name%
 echo.                  %app_version_name%
-echo.   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+echo.   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 echo.     See other here:
 echo.         github.com/MikronT
 echo.
