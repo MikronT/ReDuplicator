@@ -39,7 +39,7 @@ set math_add=call :math_add
 set math_format=start /wait /b "" "%~dpnx0" --call=math_format
 set math_get=call :math_get
 set math_set=call :math_set
-set notiffication=call :notiffication
+set notification=call :notification
 set settings_import=call :settings_import
 
 
@@ -178,7 +178,7 @@ if exist "%command%" set directory=%command%
 
 
 if exist "%temp%\return_sessionCompleted" if exist "%temp%\return_shutdown" for /f "delims=" %%i in ('type "%temp%\return_shutdown"') do if "%%i" NEQ "-1" (
-  %notiffication% warning The computer will plan shutdown in 10s! Close the window to cancel this
+  %notification% warning The computer will plan shutdown in 10s! Close the window to cancel this
   timeout /t 10 >nul
   shutdown /s /t %%i
 ) else shutdown /a
@@ -253,10 +253,10 @@ if exist "%log%" (
   echo.
   echo.^(i^) All info saved to the log file:
   for /f "delims=" %%i in ("%log%") do echo.      %log%  :^|:  %%~zi bytes
-  %notiffication% info Scan completed. All info saved to the log
+  %notification% info Scan completed. All info saved to the log
 ) else (
   echo.^(^!^) Any duplicates not found
-  %notiffication% info Scan completed. Any duplicates not found
+  %notification% info Scan completed. Any duplicates not found
 )
 
 echo.
@@ -688,16 +688,16 @@ exit /b
 
 
 
-:notiffication
+:notification
 setlocal EnableDelayedExpansion
-if /i "%1" == "info"    set notiffication_type=Info
-if /i "%1" == "warning" set notiffication_type=Warning
-if /i "%1" == "error"   set notiffication_type=Error
+if /i "%1" == "info"    set notification_type=Info
+if /i "%1" == "warning" set notification_type=Warning
+if /i "%1" == "error"   set notification_type=Error
 
-set notiffication_args=%*
-set "notiffication_text=!notiffication_args:%1 =!"
+set notification_args=%*
+set "notification_text=!notification_args:%1 =!"
 
-%module_powershell% "Add-Type -AssemblyName System.Windows.Forms; $balloon = New-Object System.Windows.Forms.NotifyIcon; $path = (Get-Process -id $pid).Path; $balloon.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($path); $balloon.BalloonTipIcon = [System.Windows.Forms.ToolTipIcon]::%notiffication_type%; $balloon.BalloonTipText = '%notiffication_text%'; $balloon.BalloonTipTitle = """%app_name% %notiffication_type%"""; $balloon.Visible = $true; $balloon.ShowBalloonTip(5000)"
+%module_powershell% "Add-Type -AssemblyName System.Windows.Forms; $balloon = New-Object System.Windows.Forms.NotifyIcon; $path = (Get-Process -id $pid).Path; $balloon.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($path); $balloon.BalloonTipIcon = [System.Windows.Forms.ToolTipIcon]::%notification_type%; $balloon.BalloonTipText = '%notification_text%'; $balloon.BalloonTipTitle = """%app_name% %notification_type%"""; $balloon.Visible = $true; $balloon.ShowBalloonTip(5000)"
 endlocal
 exit /b
 
