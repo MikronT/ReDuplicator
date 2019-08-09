@@ -134,7 +134,7 @@ if exist "%directory%" (
   ) else echo.^(^!^) Directory not found^!
   echo.^(i^) Use Drag^&Drop: drag the directory into this window or onto the %~nx0 file
 )
-if exist "temp\return_updateAvailable" (
+if exist "temp\return_update_available" (
   echo.
   echo.    ^(i^) %app_name% update is now available^! Press ^(U^) to download update
 )
@@ -159,7 +159,7 @@ if exist "%directory%" (
   if "%command%" == "2" start explorer "%~dp0logs"
   if "%command%" == "3" call :screen_settings
 )
-if /i "%command%" == "U" if exist "temp\return_updateAvailable" start "" "https://github.com/MikronT/%app_name%/releases/latest"
+if /i "%command%" == "U" if exist "temp\return_update_available" start "" "https://github.com/MikronT/%app_name%/releases/latest"
 if "%command%" == "0" exit
 
 if exist "%command%" set directory=%command%
