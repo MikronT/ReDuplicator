@@ -16,6 +16,9 @@ set app_version_name=v1.0 Beta 2
 set title_main=[MikronT] %app_name% %app_version_name%
 set title_scan=%app_name%   Session: %session%   Thread
 
+set update_version_output=temp\%app_name_ns%.version
+set update_version_url=https://drive.google.com/uc?export=download^^^&id=1AD5-j7h5W4qxSuGgnjObGaRiAFA5eIwF
+
 set setting_debug=false
 set setting_filter_include=
 set setting_filter_exclude=
@@ -41,7 +44,7 @@ set settings_import=call :settings_import
 
 
 
-%module_powershell% "Exit"
+%module_powershell% "Invoke-WebRequest -Uri """%update_version_url%""" -OutFile """%update_version_output%""""
 
 %settings_import%
 
@@ -112,6 +115,13 @@ if exist "%log%.txt" ( call :cycle_log_name
 )
 
 if "%setting_debug%" == "false" set log_debug=nul
+
+setlocal EnableDelayedExpansion
+if exist "%update_version_output%" (
+  for /f "tokens=1-6 delims=." %%i in (%update_version_output%) do set update_app_version_number=%%i%%j%%k%%l%%m%%n
+  if !update_app_version_number! GTR %app_version_number% echo.>temp\return_update_available
+)
+endlocal
 
 
 
