@@ -46,9 +46,9 @@ set settings_import=call :settings_import
 
 %module_powershell% "Invoke-WebRequest -Uri """%update_version_url%""" -OutFile """%update_version_output%""""
 
-%settings_import%
-
 for /f "tokens=1-6 delims=." %%i in ("%app_version_code%") do set app_version_number=%%i%%j%%k%%l%%m%%n
+
+%settings_import%
 
 
 
