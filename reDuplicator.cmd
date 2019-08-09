@@ -119,12 +119,7 @@ if exist "%log%.txt" ( call :cycle_log_name
 
 if "%setting_debug%" == "false" set log_debug=nul
 
-setlocal EnableDelayedExpansion
-if exist "%update_version_output%" (
-  for /f "tokens=1-6 delims=." %%i in (%update_version_output%) do set update_app_version_number=%%i%%j%%k%%l%%m%%n
-  if !update_app_version_number! GTR %app_version_number% echo.>temp\return_update_available
-)
-endlocal
+if exist "%update_version_output%" for /f "tokens=1-6 delims=." %%i in (%update_version_output%) do if "%%l" == "4" if %%i%%j%%k%%l%%m%%n GTR %app_version_number% echo.>temp\return_update_available
 
 
 
