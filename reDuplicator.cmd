@@ -78,17 +78,6 @@ if %counter_processes_main% GEQ 2 exit
 
 
 :screen_main
-if exist "%temp%\return_sessionCompleted" if exist "%temp%\return_shutdown" for /f "delims=" %%i in ('type "%temp%\return_shutdown"') do if "%%i" NEQ "-1" (
-  %notiffication% warning The computer will plan shutdown in 10s! Close the window to cancel this
-  timeout /t 10 >nul
-  shutdown /s /t %%i
-) else shutdown /a
-
-
-
-
-if exist %temp% rd /s /q %temp%
-
 if exist "%directory%" (
   echo.%directory%>temp\directory
   for /f "delims=" %%i in ("temp\directory") do if "%%~zi" == "5" set directory=%directory:\=%
@@ -144,6 +133,12 @@ if exist "%directory%" (
 )
 echo.
 echo.    ^(0^) Exit
+if exist "temp\return_updateAvailable" (
+  echo.
+  echo.
+  echo.
+  echo.^(i^) %app_name% update is now available^! Press U to update
+)
 echo.
 echo.
 echo.
@@ -166,6 +161,16 @@ if exist "%directory%" (
 if "%command%" == "0" exit
 
 if exist "%command%" set directory=%command%
+
+
+
+if exist "%temp%\return_sessionCompleted" if exist "%temp%\return_shutdown" for /f "delims=" %%i in ('type "%temp%\return_shutdown"') do if "%%i" NEQ "-1" (
+  %notiffication% warning The computer will plan shutdown in 10s! Close the window to cancel this
+  timeout /t 10 >nul
+  shutdown /s /t %%i
+) else shutdown /a
+
+if exist %temp% rd /s /q %temp%
 goto :screen_main
 
 
