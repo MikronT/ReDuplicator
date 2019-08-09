@@ -4,10 +4,13 @@ chcp 65001>nul
 %~d0
 cd "%~dp0"
 
+if not exist temp md temp
+
 
 
 set app_name=ReDuplicator
 set app_version=Beta 2
+set app_name_ns=reDuplicator
 
 set title_main=[MikronT] %app_name% %app_version%
 set title_scan=%app_name%   Session: %session%   Thread
@@ -26,8 +29,7 @@ set input=set /p command= ^^^>
 set input_clear=set command=
 set logo=call :logo
 set math_add=call :math_add
-set math_format_time=start /wait /b "" "%~dpnx0" --call=math_format_time
-set math_format_size=start /wait /b "" "%~dpnx0" --call=math_format_size
+set math_format=start /wait /b "" "%~dpnx0" --call=math_format
 set math_get=call :math_get
 set math_set=call :math_set
 set settings_import=call :settings_import
@@ -78,8 +80,8 @@ if exist "%temp%\return_sessionCompleted" if exist "%temp%\return_shutdown" for 
 
 
 
-if not exist temp ( md temp
-) else if exist %temp% rd /s /q %temp%
+
+if exist %temp% rd /s /q %temp%
 
 if exist "%directory%" (
   echo.%directory%>temp\directory
@@ -98,7 +100,7 @@ for /f "tokens=1-3 delims=/." %%i in ("%currentDate%") do set currentDate=%%k.%%
 if not exist logs md logs
 if not exist %temp% md %temp%
 
-set log_name=logs\reDuplicator_%currentDate%_%session%
+set log_name=logs\%app_name_ns%_%currentDate%_%session%
 set log=%log_name%
 set log_debug=%log_name%_debug
 set counter_log=0
@@ -188,7 +190,7 @@ if "%counter_duplicates%" NEQ "0" (
   %math_set% counter_duplicates_size 0
   (for /l %%i in (1, 1, %setting_multithreading%) do if exist %temp%\counter_duplicates_size%%i for /f "delims=" %%j in (%temp%\counter_duplicates_size%%i) do %math_add% counter_duplicates_size %%j)>nul 2>>%log_debug%
 
-  %math_format_size% --args=counter_duplicates_size
+  %math_format% --args=counter_duplicates_size
   (if exist %temp%\math_number_format_counter_duplicates_size for /f "delims=" %%i in (%temp%\math_number_format_counter_duplicates_size) do set counter_duplicates_size=%%i)>nul 2>>%log_debug%
 )
 
@@ -675,31 +677,7 @@ exit /b
 
 
 
-:math_format_time
-set math_number_format_s=0
-set math_number_format_m=0
-set math_number_format_h=0
-set math_number_format_d=0
-
-for /f "delims=" %%z in (%temp%\math_number_%1) do (
-  set    math_number_format_s=%%z
-  set /a math_number_format_m=%%z/60
-  set /a math_number_format_h=%%z/60
-  set /a math_number_format_d=%%z/24
-)
-
-(        if "%math_number_format_d%" NEQ "0" ( echo.%math_number_format_TB% days
-  ) else if "%math_number_format_h%" NEQ "0" ( echo.%math_number_format_GB% hours
-  ) else if "%math_number_format_m%" NEQ "0" ( echo.%math_number_format_MB% minutes
-  ) else                                       echo.%math_number_format_s% seconds
-)>%temp%\math_number_format_%1
-exit
-
-
-
-
-
-:math_format_size
+:math_format
 set math_number_format_B=0
 set math_number_format_KB=0
 set math_number_format_MB=0
