@@ -9,10 +9,11 @@ if not exist temp md temp
 
 
 set app_name=ReDuplicator
-set app_version=Beta 2
 set app_name_ns=reDuplicator
+set app_version_code=1.0.0.2.2.0
+set app_version_name=v1.0 Beta 2
 
-set title_main=[MikronT] %app_name% %app_version%
+set title_main=[MikronT] %app_name% %app_version_name%
 set title_scan=%app_name%   Session: %session%   Thread
 
 set setting_debug=false
@@ -37,6 +38,8 @@ set settings_import=call :settings_import
 
 
 %settings_import%
+
+for /f "tokens=1-6 delims=." %%i in ("%app_version_code%") do set app_version_number=%%i%%j%%k%%l%%m%%n
 
 
 
@@ -606,7 +609,7 @@ cls
 echo.
 echo.
 echo.    [MikronT] ==^> %app_name%
-echo.                  %app_version%
+echo.                  %app_version_name%
 echo.   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 echo.     See other here:
 echo.         github.com/MikronT
