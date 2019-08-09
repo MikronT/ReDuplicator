@@ -23,6 +23,7 @@ set setting_multithreading=2
 
 set settings=settings.ini
 
+set module_powershell=start /min powershell.exe
 set module_rehash=modules\rehash.exe -norecur -none
 
 set getProcessesCount=call :getProcessesCount
@@ -33,6 +34,7 @@ set math_add=call :math_add
 set math_format=start /wait /b "" "%~dpnx0" --call=math_format
 set math_get=call :math_get
 set math_set=call :math_set
+set notiffication=call :notiffication
 set settings_import=call :settings_import
 
 
@@ -652,6 +654,24 @@ set counter_processes=0
 
 for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq %*" ^| find /i /c "cmd.exe"') do set /a counter_processes+=%%i
 for /f "delims=" %%i in ('tasklist /fi "IMAGENAME eq cmd.exe" /fi "WINDOWTITLE eq Select %*" ^| find /i /c "cmd.exe"') do set /a counter_processes+=%%i
+exit /b
+
+
+
+
+
+
+
+
+
+:notiffication
+if "%1" == "info"    set notiffication_type=Info
+if "%1" == "warning" set notiffication_type=Warning
+if "%1" == "error"   set notiffication_type=Error
+
+set notiffication_text=The %target% backup completed successfully
+
+%module_powershell% "Add-Type -AssemblyName System.Windows.Forms; $balloon = New-Object System.Windows.Forms.NotifyIcon; $path = (Get-Process -id $pid).Path; $balloon.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($path); $balloon.BalloonTipIcon = [System.Windows.Forms.ToolTipIcon]::%notiffication_type%; $balloon.BalloonTipText = '%notiffication_text%'; $balloon.BalloonTipTitle = """%app_name% %notiffication_type%"""; $balloon.Visible = $true; $balloon.ShowBalloonTip(5000)"
 exit /b
 
 
