@@ -359,11 +359,11 @@ set counter_duplicates=0
 set counter_duplicates_size=0
 
 for /f "tokens=1,2,* delims=;" %%i in ('type %temp%\data ^| find /i /v "%setting_filter_exclude%"') do (
+  %getProcessesCount% %title_main%*
+  if "!counter_processes!" == "0" exit
   set /a counter_files_scanned+=1
   echo.!counter_files_scanned!>%temp%\counter_files_scanned%1
   for /f "tokens=1,2,* delims=;" %%o in ('type %temp%\data_thread%1 ^| find /i /v "%setting_filter_exclude%"') do (
-    %getProcessesCount% %title_main%*
-    if "!counter_processes!" == "0" exit
     if "%%i" NEQ "%%o" if "%%j" == "%%p" (
       for /f "skip=1 tokens=2* delims=:" %%k in ('%module_rehash% -sha1 "%%i"') do (
         for /f "skip=1 tokens=2* delims=:" %%q in ('%module_rehash% -sha1 "%%o"') do (
