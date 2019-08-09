@@ -122,7 +122,6 @@ if exist "%directory%" (
   echo.
   echo.
   echo.^(i^) Main Menu
-  echo.
   echo.    ^(1^) Run scan
   echo.    ^(2^) Open logs folder
   echo.    ^(3^) Settings
@@ -131,14 +130,12 @@ if exist "%directory%" (
   ) else echo.^(^!^) Directory not found^!
   echo.^(i^) Use Drag^&Drop: drag the directory into this window or onto the %~nx0 file
 )
-echo.
-echo.    ^(0^) Exit
 if exist "temp\return_updateAvailable" (
   echo.
-  echo.
-  echo.
-  echo.^(i^) %app_name% update is now available^! Press U to update
+  echo.    ^(i^) %app_name% update is now available^! Press ^(U^) to download update
 )
+echo.
+echo.    ^(0^) Exit
 echo.
 echo.
 echo.
@@ -158,6 +155,7 @@ if exist "%directory%" (
   if "%command%" == "2" start explorer "%~dp0logs"
   if "%command%" == "3" call :screen_settings
 )
+if /i "%command%" == "U" if exist "temp\return_updateAvailable" start "" "https://github.com/MikronT/%app_name%/releases/latest"
 if "%command%" == "0" exit
 
 if exist "%command%" set directory=%command%
