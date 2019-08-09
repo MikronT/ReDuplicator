@@ -11,7 +11,7 @@
 [![Status: Release](https://img.shields.io/badge/Status-Release-green.svg?style=for-the-badge)](#)
 -->
 
-### Version name: *Beta 2*
+### Version name: *ReDuplicator v1.0 Beta 2*
 
 A console program that searches for file duplicates in the following folder or on the drive.
 
@@ -39,10 +39,10 @@ Version: 0.2, Little Endian, Build: Oct 18 2003 16:31:22
 
 
 ## Version History
-| Date       | Version    |
-|------------|------------|
-| 07.08.2019 | Beta 2     |
-| 05.08.2019 | Beta 1     |
-| 30.07.2019 | Alpha 2    |
-| 20.07.2019 | Alpha 1    |
-| 23.06.2019 | Pre-Alpha  |
+| Date       | Version        | Version Code |
+|------------|----------------|--------------|
+| 07.08.2019 | v1.0 Beta 2    | 1.0.0.2.2.0  |
+| 05.08.2019 | v1.0 Beta 1    | 1.0.0.2.1.0  |
+| 30.07.2019 | v1.0 Alpha 2   | 1.0.0.1.2.0  |
+| 20.07.2019 | v1.0 Alpha 1   | 1.0.0.1.1.0  |
+| 23.06.2019 | v1.0 Pre-Alpha | 1.0.0.0.0.0  |
